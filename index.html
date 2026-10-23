@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101218">
+<meta name="description" content="Seguimiento informativo de bebidas y estimación de alcohol.">
+<title>Noche — Seguimiento</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<style>
+:root{color-scheme:dark;--bg:#101218;--panel:#1a1e28;--panel2:#222735;--text:#f4f6fb;--muted:#a8b0c2;--line:#343b4d;--accent:#7c9cff;--red:#ff5e68;--green:#55d6a3;--purple:#bd8cff;--gray:#8d96a8;--yellow:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+header{padding:20px 18px 12px;max-width:760px;margin:auto}h1{font-size:27px;margin:0 0 4px;letter-spacing:-.5px}h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:0 0 8px}.sub{color:var(--muted);font-size:13px}
+main{max-width:760px;margin:auto;padding:0 14px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 16px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:14px;border-radius:14px;font-weight:800;font-size:16px}.tab.active{background:var(--accent);border-color:var(--accent);color:#101218}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 14px}.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}.clock{font-size:15px;color:var(--muted)}.bac{font-size:clamp(44px,13vw,70px);font-weight:850;line-height:1.1;letter-spacing:-2px;margin:8px 0}.zone{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:850;background:#353b47;color:#fff}.dot{width:9px;height:9px;border-radius:50%;background:currentColor}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.metric{background:var(--panel2);border-radius:13px;padding:12px}.metric .value{font-size:20px;font-weight:800}.metric .label{font-size:12px;color:var(--muted)}
+.notice{font-size:13px;color:#e5d9b4;background:#322b1d;border:1px solid #5d4b2c;border-radius:12px;padding:12px;margin:12px 0}.danger{color:#ffd7da;background:#381e25;border-color:#6b303b}.good{color:#bff5de;background:#16352c;border-color:#285a49}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.drink{min-height:74px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;color:var(--text);text-align:left;padding:12px;font-weight:750;display:flex;flex-direction:column;justify-content:center;gap:3px}.drink span{font-size:12px;color:var(--muted);font-weight:500}.drink:active,.btn:active,.tab:active{transform:scale(.98)}button{cursor:pointer;font:inherit}.btn{border:0;border-radius:13px;padding:14px 15px;font-weight:800;background:var(--accent);color:#101218;min-height:48px}.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.btn.red{background:#7e2b35;color:white}.btn.full{width:100%}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}input,select,textarea{width:100%;background:#11151d;border:1px solid var(--line);border-radius:11px;padding:12px;color:var(--text);font:inherit;min-height:46px}textarea{min-height:100px;resize:vertical}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}.hidden{display:none!important}#curve{width:100%;height:220px;display:block;background:#131720;border-radius:12px} .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted);margin-top:8px}.legend span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c)}
+.log{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.log:last-child{border:0}.log strong{display:block;font-size:14px}.log small{color:var(--muted)}.log .amt{font-size:14px;font-weight:800;text-align:right}
+.rule{margin-bottom:14px}.rule textarea{min-height:70px}.foot{color:var(--muted);font-size:11px;text-align:center;padding:8px 14px 20px}
+nav.bottom{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#101218ed;border-top:1px solid var(--line);backdrop-filter:blur(12px);display:grid;grid-template-columns:1fr 1fr;gap:10px}nav .tab{padding:11px}
+dialog{border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--text);width:min(92vw,430px);padding:20px}dialog::backdrop{background:#000b}dialog h2{margin-bottom:8px}dialog p{color:var(--muted);font-size:14px}.dialog-actions{display:flex;gap:9px;flex-direction:column}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.drink{min-height:84px}.metrics{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="row between"><div><h1>Noche</h1><div class="sub">Registro de bebidas · estimación orientativa</div></div><div id="liveClock" class="clock">--:--:--</div></div>
+</header>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="drinkTab" role="tab" aria-selected="true">Beber</button>
+    <button class="tab" data-tab="planTab" role="tab" aria-selected="false">Plan</button>
+  </div>
+  <section id="drinkTab">
+    <div class="card">
+      <div class="row between"><h2>Estimación actual</h2><span id="zoneBadge" class="zone"><i class="dot"></i><span id="zoneText">Sin datos</span></span></div>
+      <div id="bacValue" class="bac">0,000 %</div>
+      <div id="bacCaption" class="sub">Estimación no clínica de alcohol en sangre</div>
+      <div class="metrics">
+        <div class="metric"><div class="label">Hora estimada a 0,00 %*</div><div id="zeroTime" class="value">—</div></div>
+        <div class="metric"><div class="label">Bebidas registradas</div><div id="drinkCount" class="value">0</div></div>
+        <div class="metric"><div class="label">Alcohol registrado</div><div id="grams" class="value">0 g</div></div>
+      </div>
+      <div class="notice danger"><strong>No conduzcas basándote en esta cifra.</strong> El cálculo no mide tu BAC real ni descarta intoxicación. Alcohol + clonazepam puede causar sedación intensa, pérdida de conciencia y depresión respiratoria; no los combines. Si ya los combinaste y cuesta despertarte, respiras lento/irregular o estás muy confuso, llama a emergencias y no te quedes solo.</div>
+      <div class="sub">*La hora es una extrapolación simplificada, no una autorización para conducir. El alcohol puede seguir absorbiéndose después de la última bebida.</div>
+    </div>
+    <div class="card">
+      <h2>Perfil</h2>
+      <div class="fields">
+        <div class="field"><label for="weight">Peso (kg)</label><input id="weight" type="number" min="30" max="300" step="0.1" inputmode="decimal" placeholder="Ej. 75"></div>
+        <div class="field"><label for="sex">Coeficiente de fórmula</label><select id="sex"><option value="0.68">Hombre (r = 0,68)</option><option value="0.55">Mujer (r = 0,55)</option></select></div>
+      </div>
+      <div class="sub">Se guarda únicamente en este navegador mediante localStorage.</div>
+    </div>
+    <div class="card">
+      <h2>Añadir registro</h2>
+      <div class="grid" id="drinkButtons">
+        <button class="drink" data-name="Chupito de vodka" data-ml="40" data-abv="37.5">Chupito de vodka<span>40 ml · 37,5 %</span></button>
+        <button class="drink" data-name="Cubata" data-ml="50" data-abv="37.5">Cubata<span>50 ml de destilado · 37,5 %</span></button>
+        <button class="drink" data-name="Cerveza" data-ml="330" data-abv="5">Cerveza<span>330 ml · 5 %</span></button>
+        <button class="drink" data-name="Copa de vino" data-ml="150" data-abv="12">Copa de vino<span>150 ml · 12 %</span></button>
+        <button class="drink" data-name="Four Loko" data-ml="440" data-abv="12">Four Loko<span>440 ml · 12 %</span></button>
+        <button class="drink" data-name="Monster sin alcohol" data-ml="0" data-abv="0" data-marker="true">Monster<span>500 ml · marcador sin alcohol</span></button>
+        <button class="drink" data-name="Café" data-ml="0" data-abv="0" data-marker="true">Café<span>Marcador · no reduce el BAC</span></button>
+        <button class="drink" data-name="Agua" data-ml="0" data-abv="0" data-marker="true">Agua<span>Marcador · no reduce el BAC</span></button>
+        <button class="drink" data-name="Clonazepam 0,5 mg" data-ml="0" data-abv="0" data-med="true">Clonazepam 0,5 mg<span>Medicamento · advertencia de interacción</span></button>
+        <button class="drink" id="customOpen">Trago personalizado<span>Introducir volumen y graduación</span></button>
+      </div>
+      <div id="customForm" class="hidden" style="margin-top:14px">
+        <h3>Trago personalizado</h3>
+        <div class="field"><label for="customName">Nombre</label><input id="customName" maxlength="60" placeholder="Ej. combinado"></div>
+        <div class="fields">
+          <div class="field"><label for="customMl">Volumen de alcohol/bebida (ml)</label><input id="customMl" type="number" min="0" max="5000" step="1" inputmode="decimal" value="50"></div>
+          <div class="field"><label for="customAbv">Graduación (% vol.)</label><input id="customAbv" type="number" min="0" max="100" step="0.1" inputmode="decimal" value="37.5"></div>
+        </div>
+        <div class="actions"><button id="addCustom" class="btn">Añadir</button><button id="cancelCustom" class="btn secondary">Cancelar</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row between"><h2>Curva estimada</h2><span class="sub">Actualización cada 30 s</span></div>
+      <svg id="curve" viewBox="0 0 600 230" role="img" aria-label="Gráfico de la estimación a lo largo de la noche"></svg>
+      <div class="legend">
+        <span style="--c:#8d96a8">Menos de 0,08 %</span><span style="--c:#55d6a3">0,08–0,15 %</span><span style="--c:#bd8cff">0,15–0,20 %</span><span style="--c:#ff5e68">Más de 0,20 %</span>
+      </div>
+      <div class="sub" style="margin-top:8px">La curva aplica el modelo simplificado a los registros guardados; no representa una medición fisiológica.</div>
+    </div>
+    <div class="card">
+      <div class="row between"><h2>Registros de esta noche</h2><span id="sessionLabel" class="sub">Sin registros</span></div>
+      <div id="logList"><div class="sub">Todavía no hay registros.</div></div>
+      <div class="actions"><button id="undoBtn" class="btn secondary">Deshacer último</button><button id="newNightBtn" class="btn red">Nueva noche</button></div>
+    </div>
+  </section>
+  <section id="planTab" class="hidden">
+    <div class="card">
+      <h2>Mis 5 reglas</h2>
+      <div class="sub" style="margin-bottom:14px">Edita las reglas que quieres tener visibles durante la noche. Se guardan automáticamente en este dispositivo.</div>
+      <div class="rule"><label for="rule1">Regla 1</label><textarea id="rule1" maxlength="500"></textarea></div>
+      <div class="rule"><label for="rule2">Regla 2</label><textarea id="rule2" maxlength="500"></textarea></div>
+      <div class="rule"><label for="rule3">Regla 3</label><textarea id="rule3" maxlength="500"></textarea></div>
+      <div class="rule"><label for="rule4">Regla 4</label><textarea id="rule4" maxlength="500"></textarea></div>
+      <div class="rule"><label for="rule5">Regla 5</label><textarea id="rule5" maxlength="500"></textarea></div>
+    </div>
+    <div class="card">
+      <h2>Brief de mi amigo ancla</h2>
+      <label for="anchorBrief">Información útil para la persona que te acompaña</label>
+      <textarea id="anchorBrief" maxlength="2000" placeholder="Nombre y teléfono de contacto, cómo volver a casa, dirección, alergias relevantes, persona a quien llamar..."></textarea>
+      <div class="notice">Acordad antes de beber cómo volver a casa. No dejes que alguien muy intoxicado se quede solo ni que “duerma la mona” sin supervisión. Si no responde bien, vomita estando inconsciente o respira de forma anormal, llama a emergencias.</div>
+      <div id="savedStatus" class="sub" aria-live="polite">Cambios guardados en este dispositivo.</div>
+    </div>
+  </section>
+  <div class="foot">Datos almacenados localmente en este navegador. No es un dispositivo médico ni sustituye una evaluación profesional.</div>
+</main>
+<nav class="bottom" aria-label="Navegación">
+  <button class="tab active" data-tab="drinkTab">Beber</button><button class="tab" data-tab="planTab">Plan</button>
+</nav>
+<dialog id="oldNightDialog">
+  <h2>Hay registros anteriores</h2>
+  <p>Se encontraron bebidas guardadas de una sesión anterior. ¿Quieres comenzar una noche nueva? Si continúas, se conservarán los registros existentes.</p>
+  <div class="dialog-actions"><button id="startFresh" class="btn red">Empezar de cero</button><button id="keepNight" class="btn secondary">Conservar registros</button></div>
+</dialog>
+<dialog id="medDialog">
+  <h2>Advertencia: clonazepam</h2>
+  <p>El clonazepam combinado con alcohol puede provocar sedación profunda, pérdida de coordinación, pérdida de conciencia y respiración peligrosamente lenta. No lo combines con alcohol. Si ya los has tomado juntos, no consumas más alcohol ni sedantes y busca ayuda médica si aparecen síntomas.</p>
+  <div class="dialog-actions"><button id="medConfirm" class="btn">Registrar marcador</button><button id="medCancel" class="btn secondary">Cancelar</button></div>
+</dialog>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const STORE='noche_tracker_v1';
+const DEFAULT_RULES=[
+ 'Alterna con agua; recuerda que el agua no acelera la eliminación del alcohol.',
+ 'Come antes y durante la noche; la comida no elimina el alcohol ya absorbido.',
+ 'No conduzcas ni uses bicicleta o maquinaria después de beber.',
+ 'No mezcles alcohol con clonazepam, opioides, somníferos u otros sedantes.',
+ 'Vuelve con transporte sobrio y quédate con el amigo ancla si alguien se encuentra mal.'
+];
+let state={weight:'',sex:'0.68',drinks:[],rules:DEFAULT_RULES.slice(),anchorBrief:'',sessionStarted:null};
+let pendingMedication=false;
+function load(){
+ try{const x=JSON.parse(localStorage.getItem(STORE)||'null');if(x&&typeof x==='object')state={...state,...x};}catch(e){}
+ if(!Array.isArray(state.drinks))state.drinks=[];
+ if(!Array.isArray(state.rules))state.rules=DEFAULT_RULES.slice();
+ while(state.rules.length<5)state.rules.push(DEFAULT_RULES[state.rules.length]||'');
+ $('weight').value=state.weight??'';$('sex').value=state.sex||'0.68';
+ for(let i=0;i<5;i++)$('rule'+(i+1)).value=state.rules[i]||'';
+ $('anchorBrief').value=state.anchorBrief||'';
+}
+function save(){state.weight=$('weight').value;state.sex=$('sex').value;try{localStorage.setItem(STORE,JSON.stringify(state));$('savedStatus').textContent='Cambios guardados en este dispositivo.';}catch(e){$('savedStatus').textContent='No se pudo guardar: almacenamiento local no disponible.';}}
+function now(){return Date.now();}
+function fmtTime(ts){return new Date(ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
+function fmtDateTime(ts){return new Date(ts).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
+function num(v){return Number.isFinite(v)?v:0;}
+function gramsFor(d){return num(d.ml)*(num(d.abv)/100)*0.789;}
+function firstAlcohol(){const a=state.drinks.filter(d=>gramsFor(d)>0).map(d=>d.time);return a.length?Math.min(...a):null;}
+function rawAt(ts){
+ const weight=Number(state.weight),r=Number(state.sex);
+ if(!(weight>0)||!(r>0))return null;
+ const first=firstAlcohol();if(first===null)return 0;
+ let sum=0;
+ // Modelo solicitado: suma aportes por bebida; el tiempo de eliminación se cuenta desde el primer trago.
+ for(const d of state.drinks){if(d.time<=ts)sum+=gramsFor(d)/(weight*1000*r)*100;}
+ const hours=Math.max(0,(ts-first)/3600000);
+ return Math.max(0,sum-0.015*hours);
+}
+function zoneFor(v){
+ if(v===null)return {text:'Falta peso',color:'#8d96a8',bg:'#303642'};
+ if(v<0.08)return {text:'BAJO · <0,08 %',color:'#8d96a8',bg:'#303642'};
+ if(v<=0.15)return {text:'ZONA VERDE',color:'#55d6a3',bg:'#173b30'};
+ if(v<=0.20)return {text:'BLACKOUT · MORADO',color:'#bd8cff',bg:'#38244c'};
+ return {text:'ZONA ROJA · >0,20 %',color:'#ff5e68',bg:'#4a2029'};
+}
+function estimateZero(ts){
+ const v=rawAt(ts);if(v===null)return null;if(v<=0)return ts;
+ // Hora de cruce según el modelo lineal de eliminación desde el primer trago.
+ return ts+(v/0.015)*3600000;
+}
+function render(){
+ const t=now(),v=rawAt(t),zone=zoneFor(v);
+ $('liveClock').textContent=new Date(t).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ $('bacValue').textContent=v===null?'—':v.toFixed(3).replace('.',',')+' %';
+ $('bacValue').style.color=zone.color;
+ $('zoneBadge').style.color=zone.color;$('zoneBadge').style.background=zone.bg;$('zoneText').textContent=zone.text;
+ $('bacCaption').textContent=v===null?'Introduce tu peso para habilitar la estimación.':'Estimación matemática, no una medición de sangre.';
+ const z=estimateZero(t);$('zeroTime').textContent=z===null?'Añade tu peso':(v<=0?'Ahora (modelo)':fmtTime(z));
+ $('drinkCount').textContent=String(state.drinks.length);
+ const g=state.drinks.reduce((a,d)=>a+gramsFor(d),0);$('grams').textContent=g.toFixed(1).replace('.',',')+' g';
+ $('sessionLabel').textContent=state.drinks.length?('Desde '+fmtDateTime(Math.min(...state.drinks.map(d=>d.time)))):'Sin registros';
+ renderLog();drawCurve(t);
+}
+function renderLog(){
+ const el=$('logList');el.innerHTML='';
+ if(!state.drinks.length){el.innerHTML='<div class="sub">Todavía no hay registros.</div>';return;}
+ [...state.drinks].sort((a,b)=>b.time-a.time).forEach(d=>{
+  const row=document.createElement('div');row.className='log';
+  const left=document.createElement('div'),right=document.createElement('div');
+  const strong=document.createElement('strong');strong.textContent=d.name;
+  const small=document.createElement('small');small.textContent=fmtDateTime(d.time)+(d.marker?' · marcador':` · ${d.ml} ml · ${d.abv}%`);
+  left.append(strong,small);right.className='amt';right.textContent=gramsFor(d).toFixed(1).replace('.',',')+' g';
+  row.append(left,right);el.append(row);
+ });
+}
+function drawCurve(t){
+ const svg=$('curve'),W=600,H=230,L=48,R=16,T=16,B=35,plotW=W-L-R,plotH=H-T-B;
+ svg.innerHTML='';
+ const ns='http://www.w3.org/2000/svg';
+ function node(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;svg.append(e);return e;}
+ const vals=state.drinks.map(d=>d.time);let start=vals.length?Math.min(...vals):t-3600000;start=Math.min(start,t-3600000);
+ let end=Math.max(t,start+3600000);end=Math.max(end,...vals, t);
+ // Show up to 12 hours before current time and 12 hours forward for a useful curve.
+ start=Math.min(start,t-6*3600000);end=Math.max(end,t+3*3600000);
+ const maxVal=Math.max(.25,...state.drinks.map(d=>rawAt(d.time)||0),rawAt(t)||0);
+ const ymax=Math.min(1,Math.max(.25,Math.ceil(maxVal/.05)*.05));
+ const X=x=>L+(x-start)/(end-start)*plotW,Y=y=>T+plotH-(y/ymax)*plotH;
+ [0,.08,.15,.2].forEach((y,i)=>{
+  const yy=Y(y);node('line',{x1:L,y1:yy,x2:W-R,y2:yy,stroke:['#596171','#55d6a3','#bd8cff','#ff5e68'][i],'stroke-opacity':i===0?.55:.28,'stroke-dasharray':i===0?'':'4 4'});
+  node('text',{x:L-7,y:yy+4,'text-anchor':'end',fill:'#a8b0c2','font-size':'11'},y.toFixed(2).replace('.',','));
+ });
+ node('line',{x1:L,y1:T,x2:L,y2:T+plotH,stroke:'#596171'});node('line',{x1:L,y1:T+plotH,x2:W-R,y2:T+plotH,stroke:'#596171'});
+ for(let i=0;i<=4;i++){const ts=start+(end-start)*i/4;node('text',{x:X(ts),y:H-12,'text-anchor':'middle',fill:'#a8b0c2','font-size':'11'},fmtTime(ts));}
+ const points=[];const steps=160;
+ for(let i=0;i<=steps;i++){const ts=start+(end-start)*i/steps;const value=rawAt(ts);points.push([X(ts),Y(value===null?0:value)]);}
+ node('polyline',{points:points.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#7c9cff','stroke-width':'3','stroke-linejoin':'round','stroke-linecap':'round'});
+ state.drinks.forEach(d=>{if(gramsFor(d)>0&&d.time>=start&&d.time<=end){const val=rawAt(d.time);node('circle',{cx:X(d.time),cy:Y(val||0),r:4,fill:'#f4f6fb',stroke:'#7c9cff','stroke-width':2});}});
+ const current=rawAt(t);if(current!==null){node('line',{x1:X(t),y1:T,x2:X(t),y2:T+plotH,stroke:'#fff','stroke-opacity':'.4','stroke-dasharray':'3 4'});node('circle',{cx:X(t),cy:Y(current),r:5,fill:zoneFor(current).color,stroke:'#fff','stroke-width':1.5});}
+}
+function addDrink(name,ml,abv,extra={}){
+ state.drinks.push({id:(crypto.randomUUID?crypto.randomUUID():String(now())+Math.random()),name,ml:num(ml),abv:num(abv),time:now(),...extra});
+ if(!state.sessionStarted)state.sessionStarted=now();
+ save();render();
+}
+function newNight(){state.drinks=[];state.sessionStarted=null;save();render();}
+document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+ const tab=btn.dataset.tab;
+ ['drinkTab','planTab'].forEach(id=>$(id).classList.toggle('hidden',id!==tab));
+ document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===tab;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));});
+}));
+document.querySelectorAll('#drinkButtons .drink[data-name]').forEach(btn=>btn.addEventListener('click',()=>{
+ const d=btn.dataset;
+ if(d.med){pendingMedication=true;$('medDialog').showModal();return;}
+ addDrink(d.name,Number(d.ml),Number(d.abv),{marker:d.marker==='true'});
+}));
+$('customOpen').addEventListener('click',()=>{$('customForm').classList.remove('hidden');$('customName').focus();});
+$('cancelCustom').addEventListener('click',()=>{$('customForm').classList.add('hidden');});
+$('addCustom').addEventListener('click',()=>{
+ const ml=Number($('customMl').value),abv=Number($('customAbv').value),name=$('customName').value.trim()||'Trago personalizado';
+ if(!Number.isFinite(ml)||ml<0||ml>5000||!Number.isFinite(abv)||abv<0||abv>100){alert('Introduce un volumen de 0 a 5000 ml y una graduación de 0 a 100 %.');return;}
+ addDrink(name,ml,abv,{marker:ml===0||abv===0});$('customForm').classList.add('hidden');$('customName').value='';
+});
+$('undoBtn').addEventListener('click',()=>{if(!state.drinks.length)return;state.drinks.pop();save();render();});
+$('newNightBtn').addEventListener('click',()=>{if(!state.drinks.length){newNight();return;}if(confirm('¿Borrar todos los registros de esta noche? El perfil y el Plan se conservarán.'))newNight();});
+$('startFresh').addEventListener('click',()=>{newNight();$('oldNightDialog').close();});
+$('keepNight').addEventListener('click',()=>$('oldNightDialog').close());
+$('medConfirm').addEventListener('click',()=>{addDrink('Clonazepam 0,5 mg',0,0,{marker:true,medication:true});$('medDialog').close();});
+$('medCancel').addEventListener('click',()=>$('medDialog').close());
+$('weight').addEventListener('input',()=>{save();render();});
+$('sex').addEventListener('change',()=>{save();render();});
+for(let i=0;i<5;i++)$('rule'+(i+1)).addEventListener('input',()=>{state.rules[i]=$('rule'+(i+1)).value;save();});
+$('anchorBrief').addEventListener('input',()=>{state.anchorBrief=$('anchorBrief').value;save();});
+load();
+if(state.drinks.length){$('oldNightDialog').showModal();}
+render();setInterval(render,30000);
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>

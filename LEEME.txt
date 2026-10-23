@@ -1,0 +1,18 @@
+NOCHE — PWA
+
+Contenido:
+- index.html: aplicación
+- manifest.webmanifest: nombre, iconos y modo independiente
+- sw.js: caché para uso sin conexión tras la primera visita
+- icon-192.png e icon-512.png: iconos instalables
+
+IMPORTANTE:
+1. No basta con abrir index.html como archivo local.
+2. Publica estos archivos en un alojamiento HTTPS estático (o ejecútalos desde localhost para pruebas).
+3. Abre la dirección HTTPS en Chrome para Android.
+4. Espera a que cargue una vez con Internet.
+5. En el menú de Chrome, elige "Instalar aplicación" o "Añadir a pantalla de inicio" (el texto puede variar).
+6. Abre la app instalada una vez online para que el service worker almacene los recursos.
+
+Los datos guardados en localStorage quedan asociados al navegador/origen y al dispositivo. No borres los datos del sitio si quieres conservarlos.
+La estimación de alcohol es orientativa, no clínica, y no debe usarse para decidir si se puede conducir.
