@@ -5,92 +5,183 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101218">
 <meta name="description" content="Seguimiento informativo de bebidas y estimación de alcohol.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Noche — Seguimiento</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <style>
 :root{color-scheme:dark;--bg:#101218;--panel:#1a1e28;--panel2:#222735;--text:#f4f6fb;--muted:#a8b0c2;--line:#343b4d;--accent:#7c9cff;--red:#ff5e68;--green:#55d6a3;--purple:#bd8cff;--gray:#8d96a8;--yellow:#ffd166}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-header{padding:20px 18px 12px;max-width:760px;margin:auto}h1{font-size:27px;margin:0 0 4px;letter-spacing:-.5px}h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:0 0 8px}.sub{color:var(--muted);font-size:13px}
-main{max-width:760px;margin:auto;padding:0 14px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 16px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:14px;border-radius:14px;font-weight:800;font-size:16px}.tab.active{background:var(--accent);border-color:var(--accent);color:#101218}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 14px}.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}.clock{font-size:15px;color:var(--muted)}.bac{font-size:clamp(44px,13vw,70px);font-weight:850;line-height:1.1;letter-spacing:-2px;margin:8px 0}.zone{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:850;background:#353b47;color:#fff}.dot{width:9px;height:9px;border-radius:50%;background:currentColor}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.metric{background:var(--panel2);border-radius:13px;padding:12px}.metric .value{font-size:20px;font-weight:800}.metric .label{font-size:12px;color:var(--muted)}
-.notice{font-size:13px;color:#e5d9b4;background:#322b1d;border:1px solid #5d4b2c;border-radius:12px;padding:12px;margin:12px 0}.danger{color:#ffd7da;background:#381e25;border-color:#6b303b}.good{color:#bff5de;background:#16352c;border-color:#285a49}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.drink{min-height:74px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;color:var(--text);text-align:left;padding:12px;font-weight:750;display:flex;flex-direction:column;justify-content:center;gap:3px}.drink span{font-size:12px;color:var(--muted);font-weight:500}.drink:active,.btn:active,.tab:active{transform:scale(.98)}button{cursor:pointer;font:inherit}.btn{border:0;border-radius:13px;padding:14px 15px;font-weight:800;background:var(--accent);color:#101218;min-height:48px}.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.btn.red{background:#7e2b35;color:white}.btn.full{width:100%}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}input,select,textarea{width:100%;background:#11151d;border:1px solid var(--line);border-radius:11px;padding:12px;color:var(--text);font:inherit;min-height:46px}textarea{min-height:100px;resize:vertical}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}.hidden{display:none!important}#curve{width:100%;height:220px;display:block;background:#131720;border-radius:12px} .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted);margin-top:8px}.legend span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c)}
-.log{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.log:last-child{border:0}.log strong{display:block;font-size:14px}.log small{color:var(--muted)}.log .amt{font-size:14px;font-weight:800;text-align:right}
-.rule{margin-bottom:14px}.rule textarea{min-height:70px}.foot{color:var(--muted);font-size:11px;text-align:center;padding:8px 14px 20px}
-nav.bottom{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#101218ed;border-top:1px solid var(--line);backdrop-filter:blur(12px);display:grid;grid-template-columns:1fr 1fr;gap:10px}nav .tab{padding:11px}
-dialog{border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--text);width:min(92vw,430px);padding:20px}dialog::backdrop{background:#000b}dialog h2{margin-bottom:8px}dialog p{color:var(--muted);font-size:14px}.dialog-actions{display:flex;gap:9px;flex-direction:column}
-@media(min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.drink{min-height:84px}.metrics{grid-template-columns:repeat(3,1fr)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+header{padding:18px 18px 8px;max-width:760px;margin:auto}
+h1{font-size:27px;margin:0 0 4px;letter-spacing:-.5px}
+h2{font-size:19px;margin:0 0 12px}
+h3{font-size:16px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:13px}
+main{max-width:760px;margin:auto;padding:0 14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 14px}
+.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
+.clockbox{text-align:right}
+.clock-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.clock{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.clock-date{font-size:12px;color:var(--muted)}
+.bac{font-size:clamp(40px,12vw,64px);font-weight:850;line-height:1.1;letter-spacing:-2px;margin:8px 0}
+.bac.na{font-size:clamp(24px,7vw,34px);letter-spacing:-.5px}
+.zone{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:850;background:#353b47;color:#fff}
+.dot{width:9px;height:9px;border-radius:50%;background:currentColor}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.metric{background:var(--panel2);border-radius:13px;padding:12px}
+.metric .value{font-size:20px;font-weight:800}.metric .value.small{font-size:15px;font-weight:700}
+.metric .label{font-size:12px;color:var(--muted)}
+.driveline{margin-top:10px;font-size:14px;font-weight:700;color:#ffd7da}
+.notice{font-size:13px;color:#e5d9b4;background:#322b1d;border:1px solid #5d4b2c;border-radius:12px;padding:12px;margin:12px 0}
+.notice.good{color:#bff5de;background:#16352c;border-color:#285a49}
+.notice.danger{color:#ffd7da;background:#381e25;border-color:#6b303b}
+.alert{display:flex;gap:10px;align-items:flex-start;border:1px solid;border-radius:12px;padding:12px;margin:0 0 10px;font-size:14px}
+.alert .ico{font-size:18px;line-height:1.3;flex:none}
+.alert.warn{background:#322b1d;border-color:#5d4b2c;color:#f4e8c0}
+.alert.danger{background:#381e25;border-color:#6b303b;color:#ffe3e6}
+.alert.info{background:#1c2638;border-color:#34476b;color:#d6e0f6}
+.alert .btn{margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.drink{min-height:74px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;color:var(--text);text-align:left;padding:12px;font-weight:750;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.drink span{font-size:12px;color:var(--muted);font-weight:500}
+.drink:active,.btn:active,.tab:active{transform:scale(.98)}
+button{cursor:pointer;font:inherit}
+.btn{border:0;border-radius:13px;padding:14px 15px;font-weight:800;background:var(--accent);color:#101218;min-height:48px}
+.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.btn.red{background:#7e2b35;color:#fff}
+.btn.full{width:100%}.btn.big{min-height:58px;font-size:18px}
+.btn.sm{min-height:44px;padding:9px 12px;font-size:14px;border-radius:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+input,select,textarea{width:100%;background:#11151d;border:1px solid var(--line);border-radius:11px;padding:12px;color:var(--text);font:inherit;min-height:46px}
+input:disabled{opacity:.55}
+input[type=checkbox]{width:24px;height:24px;min-height:0;padding:0;flex:none;accent-color:var(--accent)}
+textarea{min-height:76px;resize:vertical}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text);margin:0 0 10px}
+.hidden{display:none!important}
+.hint{font-size:12px;color:var(--muted);margin-top:5px}
+.err{font-size:14px;color:#ffd7da;background:#381e25;border:1px solid #6b303b;border-radius:11px;padding:10px 12px;margin:0 0 12px}
+.preview{font-size:14px;background:var(--panel2);border-radius:11px;padding:10px 12px;margin:0 0 12px}
+#curve{width:100%;height:250px;display:block;background:#131720;border-radius:12px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-top:8px}
+.legend span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c)}
+.legend span.dash:before{border-radius:0;height:0;width:14px;background:none;border-top:2px dashed var(--c);vertical-align:middle}
+.log{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.log:last-child{border:0}
+.log strong{display:block;font-size:15px}
+.log small{color:var(--muted);display:block;font-size:12.5px}
+.log .amt{font-size:14px;font-weight:800;text-align:right;white-space:nowrap}
+.log .rowbtns{display:flex;gap:6px;margin-top:8px;justify-content:flex-end}
+.badge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:middle;background:#5d4b2c;color:#ffe9b0}
+.cat h3{margin:16px 0 6px;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.entry{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.entry .ebtns{display:flex;gap:6px;flex:none}
+.entry strong{display:block;font-size:15px}
+.rule{margin-bottom:14px}.rule textarea{min-height:70px}
+.foot{color:var(--muted);font-size:12px;text-align:center;padding:8px 14px 20px}
+details.doc{margin-top:12px}details.doc summary{cursor:pointer;font-weight:750;min-height:44px;display:flex;align-items:center}
+details.doc p,details.doc li{font-size:14px;color:var(--muted)}
+nav.bottom{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:#101218ed;border-top:1px solid var(--line);backdrop-filter:blur(12px);display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:11px 4px;border-radius:14px;font-weight:800;font-size:14px;min-height:48px}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#101218}
+dialog{border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--text);width:min(94vw,460px);max-height:92dvh;overflow:auto;padding:20px}
+dialog::backdrop{background:#000b}dialog h2{margin-bottom:8px}dialog p{color:var(--muted);font-size:14px}
+.dialog-actions{display:flex;gap:9px;flex-direction:column}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom));z-index:20;background:#16352c;color:#d5ffec;border:1px solid #285a49;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;max-width:90vw;box-shadow:0 6px 20px #0008}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.drink{min-height:84px}.metrics{grid-template-columns:repeat(3,1fr)}.dialog-actions{flex-direction:row}.dialog-actions .btn{flex:1}}
 </style>
 </head>
 <body>
 <header>
-  <div class="row between"><div><h1>Noche</h1><div class="sub">Registro de bebidas · estimación orientativa</div></div><div id="liveClock" class="clock">--:--:--</div></div>
+  <div class="row between">
+    <div><h1>Noche</h1><div class="sub">Registro de bebidas · estimación orientativa</div></div>
+    <div class="clockbox">
+      <div class="clock-label">Hora actual</div>
+      <div id="liveClock" class="clock" role="timer" aria-label="Hora actual del dispositivo">--:--:--</div>
+      <div id="liveDate" class="clock-date"></div>
+    </div>
+  </div>
 </header>
 <main>
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-tab="drinkTab" role="tab" aria-selected="true">Beber</button>
-    <button class="tab" data-tab="planTab" role="tab" aria-selected="false">Plan</button>
+  <div id="errorBanner" class="notice danger hidden" role="alert"></div>
+  <div id="updateBanner" class="notice good hidden" role="status">
+    <strong>Hay una versión nueva de la aplicación.</strong> Tus registros no se borran al actualizar.
+    <div class="actions"><button type="button" id="reloadBtn" class="btn sm">Actualizar ahora</button><button type="button" id="laterBtn" class="btn sm secondary">Más tarde</button></div>
   </div>
+
+  <!-- ================= BEBER ================= -->
   <section id="drinkTab">
     <div class="card">
-      <div class="row between"><h2>Estimación actual</h2><span id="zoneBadge" class="zone"><i class="dot"></i><span id="zoneText">Sin datos</span></span></div>
-      <div id="bacValue" class="bac">0,000 %</div>
-      <div id="bacCaption" class="sub">Estimación no clínica de alcohol en sangre</div>
+      <div class="row between wrap"><h2>Estimación del modelo</h2><span id="zoneBadge" class="zone"><i class="dot"></i><span id="zoneText">Sin datos</span></span></div>
+      <div id="bacValue" class="bac">—</div>
+      <div id="bacCaption" class="sub"></div>
+      <div class="driveline"><span aria-hidden="true">⚠️</span> Advertencia: no conduzcas después de beber. Esta cifra no es una medición.</div>
       <div class="metrics">
-        <div class="metric"><div class="label">Hora estimada a 0,00 %*</div><div id="zeroTime" class="value">—</div></div>
-        <div class="metric"><div class="label">Bebidas registradas</div><div id="drinkCount" class="value">0</div></div>
-        <div class="metric"><div class="label">Alcohol registrado</div><div id="grams" class="value">0 g</div></div>
+        <div class="metric"><div class="label">Bebidas alcohólicas</div><div id="drinkCount" class="value">0</div></div>
+        <div class="metric"><div class="label">Etanol registrado</div><div id="grams" class="value">0 g</div></div>
+        <div class="metric"><div class="label">Marcadores sin alcohol</div><div id="markerCount" class="value">0</div></div>
+        <div class="metric"><div class="label">Último consumo alcohólico</div><div id="lastDrink" class="value small">—</div></div>
+        <div class="metric"><div class="label">Primer consumo de la sesión</div><div id="firstDrink" class="value small">—</div></div>
+        <div class="metric"><div class="label">Proyección del modelo a 0,00 %*</div><div id="zeroTime" class="value small">—</div></div>
       </div>
-      <div class="notice danger"><strong>No conduzcas basándote en esta cifra.</strong> El cálculo no mide tu BAC real ni descarta intoxicación. Alcohol + clonazepam puede causar sedación intensa, pérdida de conciencia y depresión respiratoria; no los combines. Si ya los combinaste y cuesta despertarte, respiras lento/irregular o estás muy confuso, llama a emergencias y no te quedes solo.</div>
-      <div class="sub">*La hora es una extrapolación simplificada, no una autorización para conducir. El alcohol puede seguir absorbiéndose después de la última bebida.</div>
+      <div class="sub" style="margin-top:10px">*Extrapolación simplificada del modelo: no indica que puedas conducir ni que ya no haya alcohol en tu cuerpo. El alcohol puede seguir absorbiéndose después de la última bebida. Las zonas de color son categorías orientativas; ninguna significa «seguro».</div>
     </div>
+
+    <div id="alerts" aria-live="polite"></div>
+
     <div class="card">
-      <h2>Perfil</h2>
-      <div class="fields">
-        <div class="field"><label for="weight">Peso (kg)</label><input id="weight" type="number" min="30" max="300" step="0.1" inputmode="decimal" placeholder="Ej. 75"></div>
-        <div class="field"><label for="sex">Coeficiente de fórmula</label><select id="sex"><option value="0.68">Hombre (r = 0,68)</option><option value="0.55">Mujer (r = 0,55)</option></select></div>
-      </div>
-      <div class="sub">Se guarda únicamente en este navegador mediante localStorage.</div>
+      <h2>Añadir</h2>
+      <button type="button" id="addDrinkBtn" class="btn full big">＋ Añadir bebida</button>
+      <div class="hint" style="margin-bottom:6px">Elige del catálogo o escribe cualquier bebida: nombre, ml de alcohol, % vol. y hora.</div>
+      <h3 style="margin-top:14px">Favoritas</h3>
+      <div class="grid" id="favGrid"></div>
+      <h3 style="margin-top:16px">Sin alcohol / medicamento</h3>
+      <div class="grid" id="markerGrid"></div>
+      <div class="hint">Los marcadores solo quedan en el historial: no suman etanol y no reducen ni aceleran la eliminación del alcohol (ni el agua, ni el café, ni las bebidas energéticas, ni una ducha).</div>
     </div>
-    <div class="card">
-      <h2>Añadir registro</h2>
-      <div class="grid" id="drinkButtons">
-        <button class="drink" data-name="Chupito de vodka" data-ml="40" data-abv="37.5">Chupito de vodka<span>40 ml · 37,5 %</span></button>
-        <button class="drink" data-name="Cubata" data-ml="50" data-abv="37.5">Cubata<span>50 ml de destilado · 37,5 %</span></button>
-        <button class="drink" data-name="Cerveza" data-ml="330" data-abv="5">Cerveza<span>330 ml · 5 %</span></button>
-        <button class="drink" data-name="Copa de vino" data-ml="150" data-abv="12">Copa de vino<span>150 ml · 12 %</span></button>
-        <button class="drink" data-name="Four Loko" data-ml="440" data-abv="12">Four Loko<span>440 ml · 12 %</span></button>
-        <button class="drink" data-name="Monster sin alcohol" data-ml="0" data-abv="0" data-marker="true">Monster<span>500 ml · marcador sin alcohol</span></button>
-        <button class="drink" data-name="Café" data-ml="0" data-abv="0" data-marker="true">Café<span>Marcador · no reduce el BAC</span></button>
-        <button class="drink" data-name="Agua" data-ml="0" data-abv="0" data-marker="true">Agua<span>Marcador · no reduce el BAC</span></button>
-        <button class="drink" data-name="Clonazepam 0,5 mg" data-ml="0" data-abv="0" data-med="true">Clonazepam 0,5 mg<span>Medicamento · advertencia de interacción</span></button>
-        <button class="drink" id="customOpen">Trago personalizado<span>Introducir volumen y graduación</span></button>
-      </div>
-      <div id="customForm" class="hidden" style="margin-top:14px">
-        <h3>Trago personalizado</h3>
-        <div class="field"><label for="customName">Nombre</label><input id="customName" maxlength="60" placeholder="Ej. combinado"></div>
-        <div class="fields">
-          <div class="field"><label for="customMl">Volumen de alcohol/bebida (ml)</label><input id="customMl" type="number" min="0" max="5000" step="1" inputmode="decimal" value="50"></div>
-          <div class="field"><label for="customAbv">Graduación (% vol.)</label><input id="customAbv" type="number" min="0" max="100" step="0.1" inputmode="decimal" value="37.5"></div>
-        </div>
-        <div class="actions"><button id="addCustom" class="btn">Añadir</button><button id="cancelCustom" class="btn secondary">Cancelar</button></div>
-      </div>
+
+    <div class="card" id="safetyCard">
+      <h2>Seguridad</h2>
+      <div class="alert danger"><span class="ico" aria-hidden="true">🚫</span><div><strong>No conduzcas después de beber.</strong> Esta aplicación no sirve para decidir si puedes conducir, usar bicicleta o maquinaria. Una estimación baja no significa que sea seguro.</div></div>
+      <div class="alert danger"><span class="ico" aria-hidden="true">💊</span><div><strong>Alcohol + clonazepam (u otras benzodiacepinas y sedantes):</strong> puede causar sedación intensa, pérdida de conciencia y respiración lenta o ausente, incluso con cantidades pequeñas de alcohol. No los combines.</div></div>
+      <div class="alert danger"><span class="ico" aria-hidden="true">🚨</span><div><strong>Posible intoxicación grave: busca ayuda de emergencia</strong> si hay dificultad para despertar, pérdida de conciencia, respiración lenta o irregular, vómitos con poca respuesta, convulsiones o piel fría y azulada. En Perú: SAMU 106 · Bomberos 116 · Policía 105. No dejes sola a la persona y, si respira pero no responde, colócala de lado hasta que llegue la ayuda.</div></div>
+      <div class="alert warn"><span class="ico" aria-hidden="true">ℹ️</span><div><strong>Estimación aproximada.</strong> Es un cálculo matemático simplificado, no una medición de alcohol en sangre ni un diagnóstico médico.</div></div>
     </div>
+
     <div class="card">
-      <div class="row between"><h2>Curva estimada</h2><span class="sub">Actualización cada 30 s</span></div>
-      <svg id="curve" viewBox="0 0 600 230" role="img" aria-label="Gráfico de la estimación a lo largo de la noche"></svg>
+      <div class="row between"><h2>Curva estimada</h2><span class="sub">Se actualiza sola</span></div>
+      <svg id="curve" viewBox="0 0 360 250" role="img" aria-label="Gráfico de la estimación a lo largo del tiempo"></svg>
+      <div class="legend">
+        <span style="--c:#7c9cff">Estimación hasta ahora</span><span class="dash" style="--c:#7c9cff">Proyección sin más bebidas</span><span style="--c:#f4f6fb">Bebida registrada</span>
+      </div>
       <div class="legend">
         <span style="--c:#8d96a8">Menos de 0,08 %</span><span style="--c:#55d6a3">0,08–0,15 %</span><span style="--c:#bd8cff">0,15–0,20 %</span><span style="--c:#ff5e68">Más de 0,20 %</span>
       </div>
-      <div class="sub" style="margin-top:8px">La curva aplica el modelo simplificado a los registros guardados; no representa una medición fisiológica.</div>
+      <div class="sub" style="margin-top:8px">Es una estimación matemática, no una medición. El modelo supone que el alcohol se absorbe al instante (por eso las subidas son verticales); en la realidad la absorción es gradual, así que el pico real llegaría más tarde y puede ser distinto.</div>
     </div>
+
     <div class="card">
       <div class="row between"><h2>Registros de esta noche</h2><span id="sessionLabel" class="sub">Sin registros</span></div>
+      <div class="sub" style="margin-bottom:6px">Ordenados por hora de consumo (el más reciente arriba).</div>
       <div id="logList"><div class="sub">Todavía no hay registros.</div></div>
-      <div class="actions"><button id="undoBtn" class="btn secondary">Deshacer último</button><button id="newNightBtn" class="btn red">Nueva noche</button></div>
+      <div class="actions"><button type="button" id="undoBtn" class="btn secondary">Deshacer último</button><button type="button" id="newNightBtn" class="btn red">Nueva noche</button></div>
     </div>
   </section>
+
+  <!-- ================= CATÁLOGO ================= -->
+  <section id="catalogTab" class="hidden">
+    <div class="card">
+      <h2>Catálogo y favoritas</h2>
+      <div class="sub">Los valores son <strong>ejemplos editables</strong>, no una garantía: la graduación y el volumen cambian según producto, país y formato. Confirma siempre la etiqueta. Cambiar el catálogo nunca modifica registros ya guardados.</div>
+      <div class="actions"><button type="button" id="catNewBtn" class="btn">＋ Nueva bebida</button><button type="button" id="catRestoreBtn" class="btn secondary">Restaurar ejemplos</button></div>
+      <div id="catalogList"></div>
+    </div>
+  </section>
+
+  <!-- ================= PLAN ================= -->
   <section id="planTab" class="hidden">
     <div class="card">
       <h2>Mis 5 reglas</h2>
@@ -109,26 +200,140 @@ dialog{border:1px solid var(--line);border-radius:18px;background:var(--panel);c
       <div id="savedStatus" class="sub" aria-live="polite">Cambios guardados en este dispositivo.</div>
     </div>
   </section>
+
+  <!-- ================= AJUSTES ================= -->
+  <section id="settingsTab" class="hidden">
+    <div class="card">
+      <h2>Perfil</h2>
+      <div class="fields">
+        <div class="field"><label for="weight">Peso (kg)</label><input id="weight" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 75 (30–300)"></div>
+        <div class="field"><label for="sex">Coeficiente de fórmula</label><select id="sex"><option value="0.68">Hombre (r = 0,68)</option><option value="0.55">Mujer (r = 0,55)</option></select></div>
+      </div>
+      <div id="weightMsg" class="hint" aria-live="polite"></div>
+      <div class="field" style="margin-top:12px"><label for="threshold">Umbral informativo de aviso (% estimado)</label><input id="threshold" type="text" inputmode="decimal" autocomplete="off" placeholder="0,08"></div>
+      <div class="hint">Cuando la estimación del modelo supere este valor aparecerá un aviso. Es solo un recordatorio: no define qué es seguro. Rango 0,01–0,50.</div>
+      <div id="thresholdMsg" class="hint" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <h2>Datos y copia de seguridad</h2>
+      <div class="sub">Tus datos viven solo en este navegador y en este dispositivo (<code>localStorage</code>): no se envían a ningún servidor, <strong>no se sincronizan entre dispositivos</strong> y <strong>no están cifrados</strong>. Borrar los datos del sitio los elimina. Exporta una copia de vez en cuando.</div>
+      <div class="actions">
+        <button type="button" id="exportBtn" class="btn secondary">Exportar copia (.json)</button>
+        <button type="button" id="importBtn" class="btn secondary">Importar copia…</button>
+      </div>
+      <input id="importFile" type="file" accept=".json,application/json" class="hidden">
+      <div class="actions"><button type="button" id="restoreNightBtn" class="btn secondary hidden">Restaurar última noche borrada</button></div>
+      <div id="dataMsg" class="hint" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <h2>Cómo se calcula</h2>
+      <details class="doc" open>
+        <summary>Fórmulas, hipótesis y límites del modelo</summary>
+        <ul>
+          <li><strong>Etanol (g)</strong> = ml × (% vol. ÷ 100) × 0,789 (0,789 g/ml ≈ densidad del etanol). Ej.: 50 ml al 40 % → 15,78 g.</li>
+          <li><strong>Estimación (%)</strong> = g ÷ (peso en kg × 1000 × r) × 100, con r = 0,68 (hombre) o 0,55 (mujer): promedios poblacionales (modelo de Widmark simplificado). Unidad: % ≈ g por 100 ml de sangre (aprox.); 0,05 % ≈ 0,5 g/L.</li>
+          <li><strong>Eliminación:</strong> lineal y constante, 0,015 % por hora, y solo mientras el modelo tenga alcohol (no se acumula «crédito» de eliminación en horas sin alcohol).</li>
+          <li><strong>Absorción:</strong> el modelo supone que todo el alcohol entra al instante. Es una simplificación irreal: no predice el pico real ni cuándo ocurre.</li>
+          <li><strong>No considera:</strong> comida, ritmo y tipo de bebida, composición corporal real, tolerancia, medicamentos, enfermedades ni la variación entre personas (la eliminación real puede ser bastante distinta).</li>
+          <li>Solo se cuentan las bebidas alcohólicas con volumen, graduación y hora conocidos. Los marcadores sin alcohol no entran en el cálculo.</li>
+          <li>Distingue siempre: <em>gramos de etanol ingeridos</em> ≠ <em>estimación matemática</em> ≠ <em>medición con un instrumento real</em>.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
   <div class="foot">Datos almacenados localmente en este navegador. No es un dispositivo médico ni sustituye una evaluación profesional.</div>
 </main>
+
 <nav class="bottom" aria-label="Navegación">
-  <button class="tab active" data-tab="drinkTab">Beber</button><button class="tab" data-tab="planTab">Plan</button>
+  <button type="button" class="tab active" data-tab="drinkTab" aria-current="page">Beber</button>
+  <button type="button" class="tab" data-tab="catalogTab">Catálogo</button>
+  <button type="button" class="tab" data-tab="planTab">Plan</button>
+  <button type="button" class="tab" data-tab="settingsTab">Ajustes</button>
 </nav>
+<div id="toast" class="hidden" role="status" aria-live="polite"></div>
+
+<!-- Formulario de bebida (alta y edición) -->
+<dialog id="drinkDialog" aria-labelledby="drinkDialogTitle">
+  <form id="drinkForm" novalidate>
+    <h2 id="drinkDialogTitle">Añadir bebida</h2>
+    <div id="fdError" class="err hidden" role="alert"></div>
+
+    <div class="field alc-only"><label for="fdCatalog">Elegir del catálogo o favoritas (opcional)</label><select id="fdCatalog"></select></div>
+    <div class="field"><label for="fdName">Nombre de la bebida o preparación</label><input id="fdName" maxlength="60" autocomplete="off" placeholder="Ej. Ron con Coca-Cola"></div>
+    <div class="field alc-only"><label for="fdType">Tipo de bebida</label><select id="fdType"></select><div id="fdTypeHint" class="hint hidden"></div></div>
+    <div class="fields alc-only">
+      <div class="field"><label for="fdMl" id="fdMlLabel">Volumen de bebida alcohólica (ml)</label><input id="fdMl" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 50"></div>
+      <div class="field"><label for="fdAbv">Graduación (% vol.)</label><input id="fdAbv" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 37,5"></div>
+    </div>
+    <label class="chk alc-only"><input type="checkbox" id="fdAbvUnknown"><span>No sé la graduación (la revisaré en la etiqueta). Se guardará como pendiente y <strong>no contará</strong> en el cálculo hasta que la añadas.</span></label>
+    <label class="chk alc-only"><input type="checkbox" id="fdEst"><span>Los valores son una <strong>estimación mía</strong> (no están en la etiqueta ni los medí).</span></label>
+    <div class="field alc-only hidden" id="fdTotalWrap"><label for="fdTotal">Volumen total del vaso o mezcla (ml, opcional)</label><input id="fdTotal" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 250"><div class="hint">Solo informativo: el cálculo usa únicamente el volumen de la parte alcohólica de arriba.</div></div>
+
+    <div class="fields">
+      <div class="field"><label for="fdDate">Fecha del consumo</label><input id="fdDate" type="date"></div>
+      <div class="field"><label for="fdTime">Hora del consumo</label><input id="fdTime" type="time"></div>
+    </div>
+    <div class="hint" style="margin:-6px 0 12px">Mientras no la cambies, se usará la hora actual al guardar. <button type="button" id="fdNow" class="btn sm secondary" style="margin-left:6px">Ahora</button></div>
+    <div class="field"><label for="fdNote">Observaciones (opcional)</label><textarea id="fdNote" maxlength="300" placeholder="Ej. lo preparó un amigo, vaso grande…"></textarea></div>
+
+    <div id="fdPreview" class="preview alc-only" aria-live="polite"></div>
+    <label class="chk alc-only" id="fdFavWrap"><input type="checkbox" id="fdFav"><span>Guardar como favorita para volver a usarla</span></label>
+
+    <div class="dialog-actions">
+      <button type="submit" class="btn" id="fdSave">Guardar</button>
+      <button type="button" class="btn secondary" id="fdCancel">Cancelar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Edición de una entrada del catálogo -->
+<dialog id="catDialog" aria-labelledby="catDialogTitle">
+  <form id="catForm" novalidate>
+    <h2 id="catDialogTitle">Bebida del catálogo</h2>
+    <div id="cdError" class="err hidden" role="alert"></div>
+    <div class="field"><label for="cdName">Nombre</label><input id="cdName" maxlength="60" autocomplete="off"></div>
+    <div class="field"><label for="cdType">Tipo</label><select id="cdType"></select></div>
+    <div class="fields">
+      <div class="field"><label for="cdMl">Volumen típico (ml)</label><input id="cdMl" type="text" inputmode="decimal" autocomplete="off"></div>
+      <div class="field"><label for="cdAbv">Graduación (% vol.)</label><input id="cdAbv" type="text" inputmode="decimal" autocomplete="off"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="cdAbvUnknown"><span>Graduación según etiqueta (se pedirá al registrar)</span></label>
+    <label class="chk"><input type="checkbox" id="cdEst"><span>Marcar como estimación por defecto (combinados, cócteles)</span></label>
+    <div class="dialog-actions"><button type="submit" class="btn">Guardar en catálogo</button><button type="button" class="btn secondary" id="cdCancel">Cancelar</button></div>
+  </form>
+</dialog>
+
+<!-- Confirmación genérica -->
+<dialog id="confirmDialog" aria-labelledby="cfTitle">
+  <form method="dialog">
+    <h2 id="cfTitle">Confirmar</h2>
+    <p id="cfMsg"></p>
+    <div class="dialog-actions"><button type="submit" value="ok" id="cfOk" class="btn red">Aceptar</button><button type="submit" value="cancel" class="btn secondary">Cancelar</button></div>
+  </form>
+</dialog>
+
 <dialog id="oldNightDialog">
   <h2>Hay registros anteriores</h2>
   <p>Se encontraron bebidas guardadas de una sesión anterior. ¿Quieres comenzar una noche nueva? Si continúas, se conservarán los registros existentes.</p>
-  <div class="dialog-actions"><button id="startFresh" class="btn red">Empezar de cero</button><button id="keepNight" class="btn secondary">Conservar registros</button></div>
+  <div class="dialog-actions"><button type="button" id="startFresh" class="btn red">Empezar de cero</button><button type="button" id="keepNight" class="btn secondary">Conservar registros</button></div>
 </dialog>
 <dialog id="medDialog">
   <h2>Advertencia: clonazepam</h2>
   <p>El clonazepam combinado con alcohol puede provocar sedación profunda, pérdida de coordinación, pérdida de conciencia y respiración peligrosamente lenta. No lo combines con alcohol. Si ya los has tomado juntos, no consumas más alcohol ni sedantes y busca ayuda médica si aparecen síntomas.</p>
-  <div class="dialog-actions"><button id="medConfirm" class="btn">Registrar marcador</button><button id="medCancel" class="btn secondary">Cancelar</button></div>
+  <div class="dialog-actions"><button type="button" id="medConfirm" class="btn">Registrar marcador</button><button type="button" id="medCancel" class="btn secondary">Cancelar</button></div>
 </dialog>
+
 <script>
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-const STORE='noche_tracker_v1';
+const STORE='noche_tracker_v2';          // clave nueva: inicia el almacenamiento de esta versión desde cero
+const SCHEMA=2,HOUR=3600000,BETA=0.015,DENSITY=0.789;
+
+/* ---------- Constantes de datos ---------- */
 const DEFAULT_RULES=[
  'Alterna con agua; recuerda que el agua no acelera la eliminación del alcohol.',
  'Come antes y durante la noche; la comida no elimina el alcohol ya absorbido.',
@@ -136,138 +341,697 @@ const DEFAULT_RULES=[
  'No mezcles alcohol con clonazepam, opioides, somníferos u otros sedantes.',
  'Vuelve con transporte sobrio y quédate con el amigo ancla si alguien se encuentra mal.'
 ];
-let state={weight:'',sex:'0.68',drinks:[],rules:DEFAULT_RULES.slice(),anchorBrief:'',sessionStarted:null};
-let pendingMedication=false;
-function load(){
- try{const x=JSON.parse(localStorage.getItem(STORE)||'null');if(x&&typeof x==='object')state={...state,...x};}catch(e){}
- if(!Array.isArray(state.drinks))state.drinks=[];
- if(!Array.isArray(state.rules))state.rules=DEFAULT_RULES.slice();
- while(state.rules.length<5)state.rules.push(DEFAULT_RULES[state.rules.length]||'');
- $('weight').value=state.weight??'';$('sex').value=state.sex||'0.68';
- for(let i=0;i<5;i++)$('rule'+(i+1)).value=state.rules[i]||'';
- $('anchorBrief').value=state.anchorBrief||'';
+const TYPES=[['cerveza_industrial','Cerveza industrial'],['cerveza_artesanal','Cerveza artesanal'],['ron','Ron'],['vodka','Vodka'],['pisco','Pisco'],['whisky','Whisky'],['gin','Gin'],['tequila','Tequila'],['licor','Licor (Jägermeister y otros)'],['vino','Vino'],['espumante','Espumante'],['coctel','Cóctel'],['preparada','Bebida preparada en lata o botella'],['combinado','Combinado (destilado + gaseosa)'],['otra','Otra']];
+const TYPE_KEYS=TYPES.map(t=>t[0]);
+const typeLabel=k=>{const t=TYPES.find(x=>x[0]===k);return t?t[1]:'';};
+// Valores de EJEMPLO editables; no son garantía de graduación de ninguna marca.
+const DEFAULT_CATALOG=[
+ {id:'c-cerv-330',name:'Cerveza industrial (vaso o lata)',type:'cerveza_industrial',ml:330,abv:5,fav:true},
+ {id:'c-cerv-620',name:'Cerveza industrial (botella grande)',type:'cerveza_industrial',ml:620,abv:5},
+ {id:'c-cerv-art',name:'Cerveza artesanal',type:'cerveza_artesanal',ml:330,abv:6},
+ {id:'c-ron',name:'Ron (dosis)',type:'ron',ml:50,abv:40},
+ {id:'c-vodka',name:'Chupito de vodka',type:'vodka',ml:40,abv:37.5,fav:true},
+ {id:'c-pisco',name:'Pisco (dosis)',type:'pisco',ml:50,abv:40},
+ {id:'c-whisky',name:'Whisky (dosis)',type:'whisky',ml:50,abv:40},
+ {id:'c-gin',name:'Gin (dosis)',type:'gin',ml:50,abv:40},
+ {id:'c-tequila',name:'Tequila (chupito)',type:'tequila',ml:40,abv:38},
+ {id:'c-licor',name:'Licor de hierbas (tipo Jägermeister)',type:'licor',ml:40,abv:35},
+ {id:'c-vino',name:'Copa de vino',type:'vino',ml:150,abv:12,fav:true},
+ {id:'c-espumante',name:'Copa de espumante',type:'espumante',ml:120,abv:11.5},
+ {id:'c-pisco-sour',name:'Pisco sour (solo el pisco)',type:'coctel',ml:60,abv:40,estimated:true},
+ {id:'c-coctel',name:'Cóctel preparado por otra persona',type:'coctel',ml:60,abv:40,estimated:true},
+ {id:'c-fourloko',name:'Four Loko (lata)',type:'preparada',ml:440,abv:null,abvUnknown:true,fav:true},
+ {id:'c-mikes',name:"Mike's Hard (botella)",type:'preparada',ml:330,abv:null,abvUnknown:true},
+ {id:'c-lata',name:'Bebida preparada en lata o botella',type:'preparada',ml:330,abv:null,abvUnknown:true},
+ {id:'c-cubata',name:'Cubata (solo cuenta el destilado)',type:'combinado',ml:50,abv:37.5,estimated:true,fav:true},
+ {id:'c-ron-gas',name:'Ron + gaseosa (solo cuenta el ron)',type:'combinado',ml:50,abv:40,estimated:true},
+ {id:'c-vodka-gas',name:'Vodka + gaseosa (solo cuenta el vodka)',type:'combinado',ml:50,abv:37.5,estimated:true},
+ {id:'c-whisky-gas',name:'Whisky + gaseosa o hielo',type:'combinado',ml:50,abv:40,estimated:true}
+];
+const MARKERS=[
+ {name:'Agua',sub:'Marcador · no reduce la estimación'},
+ {name:'Café',sub:'Marcador · no reduce la estimación'},
+ {name:'Gaseosa',sub:'Marcador · sin alcohol'},
+ {name:'Bebida energética sin alcohol',sub:'Marcador · no reduce la estimación'},
+ {name:'Clonazepam 0,5 mg',sub:'Medicamento · advertencia de interacción',med:true}
+];
+const HINTS={
+ combinado:'Combinado: escribe solo el volumen del destilado (p. ej. 50 ml de ron), no el de toda la mezcla; la gaseosa no cuenta. Si no sabes cuánto destilado lleva, pon tu mejor estimación y marca «estimación mía».',
+ coctel:'Cóctel: indica el volumen de la parte alcohólica y su graduación. Si no conoces la receta, usa una estimación y márcala como tal.',
+ preparada:'Bebida preparada: usa el volumen de la lata o botella que tomaste y la graduación (% vol.) impresa en su etiqueta.'
+};
+
+/* ---------- Utilidades ---------- */
+const isObj=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
+const pad2=n=>String(n).padStart(2,'0');
+function newId(){try{if(crypto.randomUUID)return crypto.randomUUID();}catch(e){}return String(Date.now())+'-'+Math.random().toString(36).slice(2,10);}
+// Acepta coma o punto decimal. Devuelve NaN si no es un número decimal simple no negativo.
+function parseDec(v){
+ if(typeof v==='number')return Number.isFinite(v)?v:NaN;
+ const s=String(v==null?'':v).trim().replace(',','.');
+ if(!/^(\d+(\.\d*)?|\.\d+)$/.test(s))return NaN;
+ return Number(s);
 }
-function save(){state.weight=$('weight').value;state.sex=$('sex').value;try{localStorage.setItem(STORE,JSON.stringify(state));$('savedStatus').textContent='Cambios guardados en este dispositivo.';}catch(e){$('savedStatus').textContent='No se pudo guardar: almacenamiento local no disponible.';}}
-function now(){return Date.now();}
-function fmtTime(ts){return new Date(ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
-function fmtDateTime(ts){return new Date(ts).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
-function num(v){return Number.isFinite(v)?v:0;}
-function gramsFor(d){return num(d.ml)*(num(d.abv)/100)*0.789;}
-function firstAlcohol(){const a=state.drinks.filter(d=>gramsFor(d)>0).map(d=>d.time);return a.length?Math.min(...a):null;}
-function rawAt(ts){
- const weight=Number(state.weight),r=Number(state.sex);
- if(!(weight>0)||!(r>0))return null;
- const first=firstAlcohol();if(first===null)return 0;
- let sum=0;
- // Modelo solicitado: suma aportes por bebida; el tiempo de eliminación se cuenta desde el primer trago.
- for(const d of state.drinks){if(d.time<=ts)sum+=gramsFor(d)/(weight*1000*r)*100;}
- const hours=Math.max(0,(ts-first)/3600000);
- return Math.max(0,sum-0.015*hours);
+function fmtNum(n){if(!Number.isFinite(n))return '—';return String(Math.round(n*100)/100).replace('.',',');}
+function fmtG(g){return g.toFixed(1).replace('.',',')+' g';}
+function fmtPct(v){if(v>0&&v<0.005)return '<0,01 %';return (Math.round(v*100)/100).toFixed(2).replace('.',',')+' %';}
+function fmtClock(ts){const d=new Date(ts);return pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds());}
+function fmtHM(ts){const d=new Date(ts);return pad2(d.getHours())+':'+pad2(d.getMinutes());}
+function fmtDM(ts){const d=new Date(ts);return pad2(d.getDate())+'/'+pad2(d.getMonth()+1);}
+function fmtDateTime(ts){return fmtDM(ts)+' '+fmtHM(ts);}
+function toDateInput(ts){const d=new Date(ts);return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());}
+function fmtElapsed(ms){const m=Math.floor(Math.max(0,ms)/60000);if(m<1)return 'menos de 1 min';if(m<60)return m+' min';return Math.floor(m/60)+' h '+pad2(m%60)+' min';}
+function longDate(ts){try{return new Date(ts).toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});}catch(e){return fmtDM(ts);}}
+
+/* ---------- Estado, migración y almacenamiento ---------- */
+function cloneCatalog(){return DEFAULT_CATALOG.map(e=>({...e}));}
+function freshState(){return{schema:SCHEMA,weight:'',sex:'0.68',threshold:0.08,drinks:[],rules:DEFAULT_RULES.slice(),anchorBrief:'',sessionStarted:null,catalog:cloneCatalog(),quarantine:[],lastNight:null};}
+let state=freshState(),loadProblem=null,storageOK=true;
+
+function normEntry(e){
+ if(!isObj(e))return null;
+ const ml=Number(e.ml),abv=Number(e.abv);
+ const okAbv=e.abv!==null&&e.abv!==''&&Number.isFinite(abv)&&abv>0&&abv<=100;
+ return{...e,id:typeof e.id==='string'&&e.id?e.id:newId(),name:typeof e.name==='string'&&e.name.trim()?e.name.trim().slice(0,60):'Sin nombre',
+  type:TYPE_KEYS.includes(e.type)?e.type:'otra',ml:Number.isFinite(ml)&&ml>0?ml:null,abv:okAbv?abv:null,abvUnknown:!!e.abvUnknown||!okAbv,estimated:!!e.estimated,fav:!!e.fav};
+}
+function normDrink(d){
+ const out={...d};  // conserva cualquier campo desconocido
+ out.id=typeof d.id==='string'&&d.id?d.id:newId();
+ out.name=typeof d.name==='string'&&d.name.trim()?d.name:'Sin nombre';
+ const t=d.time===null||d.time===''||d.time===undefined?NaN:Number(d.time);
+ out.time=Number.isFinite(t)?t:null;
+ out.kind=['alcohol','marker','med'].includes(d.kind)?d.kind:(d.medication?'med':(d.marker?'marker':'alcohol'));
+ const ml=d.ml===null||d.ml===''||d.ml===undefined?NaN:Number(d.ml),abv=d.abv===null||d.abv===''||d.abv===undefined?NaN:Number(d.abv);
+ out.ml=Number.isFinite(ml)?ml:null;out.abv=Number.isFinite(abv)?abv:null;
+ if(out.kind==='alcohol'){ if(out.abv===null)out.abvUnknown=true; else if(typeof out.abvUnknown!=='boolean')out.abvUnknown=false; }
+ return out;
+}
+function migrate(x){
+ const out={...freshState(),...x};
+ out.schema=SCHEMA;
+ out.weight=x.weight===null||x.weight===undefined?'':String(x.weight);
+ out.sex=x.sex==='0.55'?'0.55':'0.68';
+ const th=Number(x.threshold);out.threshold=Number.isFinite(th)&&th>=0.01&&th<=0.5?th:0.08;
+ out.catalog=Array.isArray(x.catalog)?x.catalog.map(normEntry).filter(Boolean):cloneCatalog();
+ out.quarantine=Array.isArray(x.quarantine)?x.quarantine.slice():[];
+ const src=Array.isArray(x.drinks)?x.drinks:[];
+ out.drinks=[];
+ src.forEach(d=>{if(isObj(d))out.drinks.push(normDrink(d));else out.quarantine.push(d);});
+ out.rules=Array.isArray(x.rules)?x.rules.map(r=>typeof r==='string'?r:''):DEFAULT_RULES.slice();
+ while(out.rules.length<5)out.rules.push(DEFAULT_RULES[out.rules.length]||'');
+ out.anchorBrief=typeof x.anchorBrief==='string'?x.anchorBrief:'';
+ if(!isObj(x.lastNight)||!Array.isArray(x.lastNight.drinks))out.lastNight=null;
+ return out;
+}
+function load(){
+ let raw=null;
+ try{raw=localStorage.getItem(STORE);}catch(e){storageOK=false;}
+ if(raw===null){state=freshState();return;}
+ let parsed;
+ try{parsed=JSON.parse(raw);if(!isObj(parsed))throw new Error('formato inesperado');}
+ catch(e){
+  loadProblem='corrupt';
+  try{if(localStorage.getItem(STORE+'_corrupt')===null)localStorage.setItem(STORE+'_corrupt',raw);}catch(_){}
+  state=freshState();return;
+ }
+ if(!(Number(parsed.schema)>=SCHEMA)){
+  try{if(localStorage.getItem(STORE+'_backup_pre_v2')===null)localStorage.setItem(STORE+'_backup_pre_v2',raw);}catch(_){}
+ }
+ state=migrate(parsed);
+}
+function save(){
+ state.schema=SCHEMA;
+ try{localStorage.setItem(STORE,JSON.stringify(state));storageOK=true;$('savedStatus').textContent='Cambios guardados en este dispositivo.';return true;}
+ catch(e){storageOK=false;$('savedStatus').textContent='No se pudo guardar: almacenamiento local no disponible o lleno.';renderAlerts();return false;}
+}
+
+/* ---------- Cálculo ---------- */
+function ethanolG(d){
+ if(!d||d.kind!=='alcohol'||d.abvUnknown)return 0;
+ const ml=Number(d.ml),abv=Number(d.abv);
+ if(!(ml>0)||!(abv>0)||abv>100)return 0;
+ return ml*(abv/100)*DENSITY;
+}
+function isCounted(d){return d.kind==='alcohol'&&Number.isFinite(d.time)&&ethanolG(d)>0;}
+function weightKg(){const w=parseDec(state.weight);return w>=30&&w<=300?w:null;}
+// Modelo: aporte de Widmark por bebida (absorción instantánea) y eliminación lineal solo mientras hay alcohol en el modelo.
+function buildModel(){
+ const w=weightKg(),r=Number(state.sex);
+ if(!w||!(r>0))return null;
+ const ev=state.drinks.filter(isCounted).map(d=>({t:d.time,add:ethanolG(d)/(w*1000*r)*100})).sort((a,b)=>a.t-b.t);
+ const knots=[];let cur=0,tcur=null;
+ for(const e of ev){
+  if(tcur!==null)cur=Math.max(0,cur-BETA*(e.t-tcur)/HOUR);
+  cur+=e.add;tcur=e.t;knots.push({t:e.t,v:cur});
+ }
+ return{knots};
+}
+function bacAt(m,t){
+ if(!m||!m.knots.length)return 0;
+ let k=null;for(const x of m.knots){if(x.t<=t)k=x;else break;}
+ if(!k)return 0;
+ return Math.max(0,k.v-BETA*(t-k.t)/HOUR);
 }
 function zoneFor(v){
- if(v===null)return {text:'Falta peso',color:'#8d96a8',bg:'#303642'};
- if(v<0.08)return {text:'BAJO · <0,08 %',color:'#8d96a8',bg:'#303642'};
- if(v<=0.15)return {text:'ZONA VERDE',color:'#55d6a3',bg:'#173b30'};
- if(v<=0.20)return {text:'BLACKOUT · MORADO',color:'#bd8cff',bg:'#38244c'};
- return {text:'ZONA ROJA · >0,20 %',color:'#ff5e68',bg:'#4a2029'};
+ if(v===null)return{text:'Estimación no disponible',color:'#8d96a8',bg:'#303642'};
+ if(v<0.08)return{text:'BAJO · <0,08 %',color:'#8d96a8',bg:'#303642'};
+ if(v<=0.15)return{text:'ZONA VERDE · 0,08–0,15 %',color:'#55d6a3',bg:'#173b30'};
+ if(v<=0.20)return{text:'BLACKOUT · MORADO',color:'#bd8cff',bg:'#38244c'};
+ return{text:'ZONA ROJA · >0,20 %',color:'#ff5e68',bg:'#4a2029'};
 }
-function estimateZero(ts){
- const v=rawAt(ts);if(v===null)return null;if(v<=0)return ts;
- // Hora de cruce según el modelo lineal de eliminación desde el primer trago.
- return ts+(v/0.015)*3600000;
+
+/* ---------- Avisos auxiliares ---------- */
+let toastTimer=null;
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.add('hidden'),3200);}
+function ask(title,msg,okLabel,danger){
+ return new Promise(res=>{
+  const dlg=$('confirmDialog');$('cfTitle').textContent=title;$('cfMsg').textContent=msg;
+  const ok=$('cfOk');ok.textContent=okLabel||'Aceptar';ok.className='btn'+(danger===false?'':' red');
+  dlg.returnValue='';
+  dlg.addEventListener('close',()=>res(dlg.returnValue==='ok'),{once:true});
+  dlg.showModal();
+ });
 }
-function render(){
- const t=now(),v=rawAt(t),zone=zoneFor(v);
- $('liveClock').textContent=new Date(t).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
- $('bacValue').textContent=v===null?'—':v.toFixed(3).replace('.',',')+' %';
- $('bacValue').style.color=zone.color;
+function showFatal(msg){const b=$('errorBanner');if(!b)return;b.textContent='Ocurrió un error inesperado en la aplicación. Tus datos guardados no se han borrado. Recarga la página; si se repite, exporta una copia en Ajustes. Detalle: '+String(msg).slice(0,160);b.classList.remove('hidden');}
+window.addEventListener('error',e=>showFatal(e.message||'error'));
+window.addEventListener('unhandledrejection',e=>showFatal((e.reason&&e.reason.message)||e.reason||'promesa rechazada'));
+
+/* ---------- Render ---------- */
+function alcoholDrinks(){return state.drinks.filter(d=>d.kind==='alcohol'&&Number.isFinite(d.time));}
+function renderTimes(t){
+ $('liveClock').textContent=fmtClock(t);
+ $('liveDate').textContent=longDate(t);
+ const a=alcoholDrinks();
+ if(a.length){
+  const last=Math.max(...a.map(d=>d.time)),first=Math.min(...a.map(d=>d.time));
+  $('lastDrink').textContent=fmtHM(last)+' · hace '+fmtElapsed(t-last);
+  $('firstDrink').textContent=fmtDateTime(first)+' · hace '+fmtElapsed(t-first);
+ }else{$('lastDrink').textContent='—';$('firstDrink').textContent='—';}
+}
+function currentEstimate(t){const m=buildModel();return{m,v:m?bacAt(m,t):null};}
+function renderEstimate(t){
+ const {m,v}=currentEstimate(t);
+ const bac=$('bacValue'),cap=$('bacCaption'),counted=state.drinks.filter(isCounted);
+ let zone;
+ if(v===null){
+  zone=zoneFor(null);bac.textContent='Estimación no disponible';bac.classList.add('na');
+  cap.textContent='Falta tu peso (30–300 kg). Configúralo en Ajustes para habilitar la estimación.';
+ }else if(!counted.length){
+  zone={text:'Sin bebidas contabilizadas',color:'#8d96a8',bg:'#303642'};bac.textContent='—';bac.classList.remove('na');
+  cap.textContent='Sin bebidas alcohólicas con volumen y graduación conocidos.';
+ }else{
+  zone=zoneFor(v);bac.textContent='≈ '+fmtPct(v);bac.classList.remove('na');
+  cap.textContent=v<=0?'El modelo ya no calcula alcohol; esto no significa que no quede alcohol en tu cuerpo ni que puedas conducir.':'Estimación matemática simplificada, no una medición de sangre.';
+ }
+ bac.style.color=zone.color;
  $('zoneBadge').style.color=zone.color;$('zoneBadge').style.background=zone.bg;$('zoneText').textContent=zone.text;
- $('bacCaption').textContent=v===null?'Introduce tu peso para habilitar la estimación.':'Estimación matemática, no una medición de sangre.';
- const z=estimateZero(t);$('zeroTime').textContent=z===null?'Añade tu peso':(v<=0?'Ahora (modelo)':fmtTime(z));
- $('drinkCount').textContent=String(state.drinks.length);
- const g=state.drinks.reduce((a,d)=>a+gramsFor(d),0);$('grams').textContent=g.toFixed(1).replace('.',',')+' g';
- $('sessionLabel').textContent=state.drinks.length?('Desde '+fmtDateTime(Math.min(...state.drinks.map(d=>d.time)))):'Sin registros';
- renderLog();drawCurve(t);
+ const z=$('zeroTime');
+ if(v===null)z.textContent='Estimación no disponible';
+ else if(!counted.length)z.textContent='—';
+ else if(v<=0)z.textContent='El modelo ya está en 0';
+ else z.textContent='≈ '+fmtHM(t+(v/BETA)*HOUR);
+ $('drinkCount').textContent=String(state.drinks.filter(d=>d.kind==='alcohol').length);
+ $('markerCount').textContent=String(state.drinks.filter(d=>d.kind!=='alcohol').length);
+ $('grams').textContent=fmtG(state.drinks.reduce((a,d)=>a+ethanolG(d),0));
+ const times=state.drinks.filter(d=>Number.isFinite(d.time)).map(d=>d.time);
+ $('sessionLabel').textContent=times.length?('Desde '+fmtDateTime(Math.min(...times))):(state.drinks.length?'Sin hora válida':'Sin registros');
+ renderTimes(t);
+}
+function renderAlerts(){
+ const el=$('alerts');if(!el)return;
+ const t=Date.now(),{v}=currentEstimate(t),A=[];
+ if(loadProblem==='corrupt')A.push({lvl:'danger',ico:'🗄️',lab:'Datos',txt:'No se pudieron leer los datos guardados. Se conservó una copia intacta (clave noche_tracker_v1_corrupt) y la aplicación empezó vacía. Antes de seguir registrando, exporta o copia esos datos si te importan.'});
+ if(!storageOK)A.push({lvl:'danger',ico:'💾',lab:'Guardado',txt:'No se puede guardar en este navegador (almacenamiento local bloqueado o lleno). Los registros se perderán al cerrar la aplicación.'});
+ if(state.quarantine&&state.quarantine.length)A.push({lvl:'warn',ico:'🧩',lab:'Datos',txt:state.quarantine.length+' elemento(s) guardado(s) con formato no reconocible se conservan sin mostrarse ni usarse.'});
+ if(weightKg()===null)A.push({lvl:'warn',ico:'⚖️',lab:'Falta un dato',txt:'Falta tu peso (entre 30 y 300 kg): sin él la estimación no está disponible.',action:{label:'Ir a Ajustes',fn:()=>switchTab('settingsTab')}});
+ const pend=state.drinks.filter(d=>d.kind==='alcohol'&&!isCounted(d));
+ if(pend.length){
+  const unk=pend.filter(d=>d.abvUnknown||d.abv===null).length,other=pend.length-unk;
+  const names=pend.slice(0,3).map(d=>'«'+d.name+'»').join(', ')+(pend.length>3?'…':'');
+  let txt=pend.length+' bebida(s) no se cuentan en el cálculo: '+names+'. ';
+  if(unk)txt+=unk+' con graduación desconocida (revisa la etiqueta o escribe una estimación). ';
+  if(other)txt+=other+' con volumen, graduación u hora no válidos. ';
+  A.push({lvl:'warn',ico:'❓',lab:'Graduación desconocida',txt:txt+'Edita el registro para completarlo.'});
+ }
+ const thr=state.threshold;
+ if(v!==null&&v>=thr&&state.drinks.some(isCounted))A.push({lvl:'warn',ico:'📈',lab:'Umbral superado',txt:'La estimación del modelo (≈ '+fmtPct(v)+') alcanzó tu umbral informativo ('+fmtPct(thr)+'). Es un aviso orientativo: considera parar, comer y beber agua, y no conducir.'});
+ const hasMed=state.drinks.some(d=>d.kind==='med'),hasAlc=state.drinks.some(d=>d.kind==='alcohol');
+ if(hasMed&&hasAlc)A.push({lvl:'danger',ico:'💊',lab:'Interacción',txt:'Registraste clonazepam y alcohol en esta sesión. Esa combinación puede causar sedación profunda y respiración lenta aunque la estimación sea baja. No consumas más alcohol ni sedantes y busca ayuda médica si aparecen síntomas.'});
+ if((v!==null&&v>0.20)||(hasMed&&hasAlc))A.push({lvl:'danger',ico:'🚨',lab:'Posible intoxicación grave',txt:'Si la persona no despierta con facilidad, pierde el conocimiento o respira lento o de forma irregular: llama ya a emergencias (Perú: SAMU 106, Bomberos 116, Policía 105) y no la dejes sola.'});
+ el.textContent='';
+ A.forEach(a=>{
+  const box=document.createElement('div');box.className='alert '+a.lvl;
+  const ico=document.createElement('span');ico.className='ico';ico.setAttribute('aria-hidden','true');ico.textContent=a.ico;
+  const body=document.createElement('div');const s=document.createElement('strong');s.textContent=a.lab+': ';body.append(s,document.createTextNode(a.txt));
+  if(a.action){const b=document.createElement('button');b.type='button';b.className='btn sm secondary';b.textContent=a.action.label;b.addEventListener('click',a.action.fn);body.append(document.createElement('br'),b);}
+  box.append(ico,body);el.append(box);
+ });
+}
+function renderFavs(){
+ const g=$('favGrid');g.textContent='';
+ const favs=state.catalog.filter(e=>e.fav);
+ if(!favs.length){const d=document.createElement('div');d.className='sub';d.textContent='Aún no tienes favoritas: marca ★ en el Catálogo o usa «Guardar como favorita» al añadir una bebida.';g.style.display='block';g.append(d);return;}
+ g.style.display='';
+ favs.forEach(e=>{
+  const b=document.createElement('button');b.type='button';b.className='drink';b.textContent=e.name;
+  const sp=document.createElement('span');sp.textContent=fmtNum(e.ml)+' ml · '+(e.abvUnknown?'graduación: ver etiqueta':fmtNum(e.abv)+' %');
+  b.append(sp);b.addEventListener('click',()=>openDrink({entry:e}));g.append(b);
+ });
+}
+function renderMarkers(){
+ const g=$('markerGrid');g.textContent='';
+ MARKERS.forEach(m=>{
+  const b=document.createElement('button');b.type='button';b.className='drink';b.textContent=m.name;
+  const sp=document.createElement('span');sp.textContent=m.sub;b.append(sp);
+  b.addEventListener('click',()=>{if(m.med){$('medDialog').showModal();return;}addMarker(m.name,false);});
+  g.append(b);
+ });
+}
+function logRow(d){
+ const row=document.createElement('div');row.className='log';
+ const left=document.createElement('div'),right=document.createElement('div');right.style.flex='none';
+ const strong=document.createElement('strong');strong.textContent=d.name;
+ const counted=isCounted(d);
+ if(d.kind==='alcohol'&&!counted){const b=document.createElement('span');b.className='badge';b.textContent=d.abvUnknown?'sin graduación · no cuenta':'incompleto · no cuenta';strong.append(b);}
+ if(d.estimated){const b=document.createElement('span');b.className='badge';b.textContent='estimado';strong.append(b);}
+ const small=document.createElement('small');
+ const parts=[Number.isFinite(d.time)?fmtDateTime(d.time):'hora desconocida'];
+ if(d.kind==='alcohol'){
+  parts.push(Number.isFinite(d.ml)?fmtNum(d.ml)+' ml':'volumen desconocido');
+  parts.push(d.abvUnknown||!Number.isFinite(d.abv)?'graduación desconocida':fmtNum(d.abv)+' %');
+  if(d.type&&d.type!=='otra'&&typeLabel(d.type))parts.push(typeLabel(d.type));
+  if(Number.isFinite(d.totalMl))parts.push('vaso total '+fmtNum(d.totalMl)+' ml');
+ }else parts.push(d.kind==='med'?'medicamento':'marcador sin alcohol');
+ small.textContent=parts.join(' · ');
+ left.append(strong,small);
+ if(d.note){const n=document.createElement('small');n.textContent='“'+d.note+'”';n.style.fontStyle='italic';left.append(n);}
+ const amt=document.createElement('div');amt.className='amt';
+ amt.textContent=d.kind!=='alcohol'?'—':(counted?fmtG(ethanolG(d)):'no cuenta');
+ const btns=document.createElement('div');btns.className='rowbtns';
+ const eb=document.createElement('button'),db=document.createElement('button');
+ eb.type=db.type='button';eb.className=db.className='btn sm secondary';eb.textContent='Editar';db.textContent='Eliminar';
+ eb.setAttribute('aria-label','Editar '+d.name);db.setAttribute('aria-label','Eliminar '+d.name);
+ eb.addEventListener('click',()=>openDrink({mode:'edit',record:d}));
+ db.addEventListener('click',()=>deleteDrink(d.id));
+ btns.append(eb,db);right.append(amt,btns);
+ row.append(left,right);return row;
 }
 function renderLog(){
- const el=$('logList');el.innerHTML='';
- if(!state.drinks.length){el.innerHTML='<div class="sub">Todavía no hay registros.</div>';return;}
- [...state.drinks].sort((a,b)=>b.time-a.time).forEach(d=>{
-  const row=document.createElement('div');row.className='log';
-  const left=document.createElement('div'),right=document.createElement('div');
-  const strong=document.createElement('strong');strong.textContent=d.name;
-  const small=document.createElement('small');small.textContent=fmtDateTime(d.time)+(d.marker?' · marcador':` · ${d.ml} ml · ${d.abv}%`);
-  left.append(strong,small);right.className='amt';right.textContent=gramsFor(d).toFixed(1).replace('.',',')+' g';
-  row.append(left,right);el.append(row);
+ const el=$('logList');el.textContent='';
+ if(!state.drinks.length){const d=document.createElement('div');d.className='sub';d.textContent='Todavía no hay registros.';el.append(d);return;}
+ const key=d=>Number.isFinite(d.time)?d.time:-1e18;
+ [...state.drinks].sort((a,b)=>key(b)-key(a)).forEach(d=>el.append(logRow(d)));
+}
+function renderCatalog(){
+ const el=$('catalogList');el.textContent='';
+ if(!state.catalog.length){const d=document.createElement('div');d.className='sub';d.style.marginTop='12px';d.textContent='El catálogo está vacío. Crea una bebida nueva o restaura los ejemplos.';el.append(d);return;}
+ TYPES.forEach(([k,label])=>{
+  const list=state.catalog.filter(e=>e.type===k);if(!list.length)return;
+  const sec=document.createElement('div');sec.className='cat';
+  const h=document.createElement('h3');h.textContent=label;sec.append(h);
+  list.forEach(e=>{
+   const row=document.createElement('div');row.className='entry';
+   const info=document.createElement('div');
+   const st=document.createElement('strong');st.textContent=e.name;
+   const sm=document.createElement('small');sm.className='sub';
+   sm.textContent=fmtNum(e.ml)+' ml · '+(e.abvUnknown?'graduación: ver etiqueta':fmtNum(e.abv)+' %')+(e.estimated?' · estimación':'');
+   info.append(st,sm);
+   const bt=document.createElement('div');bt.className='ebtns';
+   const fav=document.createElement('button');fav.type='button';fav.className='btn sm secondary';fav.textContent=e.fav?'★':'☆';fav.setAttribute('aria-pressed',String(!!e.fav));fav.setAttribute('aria-label',(e.fav?'Quitar de favoritas: ':'Marcar como favorita: ')+e.name);
+   fav.addEventListener('click',()=>{e.fav=!e.fav;save();renderCatalog();renderFavs();});
+   const reg=document.createElement('button');reg.type='button';reg.className='btn sm';reg.textContent='Registrar';reg.setAttribute('aria-label','Registrar '+e.name);
+   reg.addEventListener('click',()=>openDrink({entry:e}));
+   const ed=document.createElement('button');ed.type='button';ed.className='btn sm secondary';ed.textContent='Editar';ed.setAttribute('aria-label','Editar en catálogo: '+e.name);
+   ed.addEventListener('click',()=>openCat(e));
+   const del=document.createElement('button');del.type='button';del.className='btn sm secondary';del.textContent='✕';del.setAttribute('aria-label','Borrar del catálogo: '+e.name);
+   del.addEventListener('click',async()=>{if(await ask('Borrar del catálogo','¿Borrar «'+e.name+'» del catálogo? Los registros ya guardados no cambian.','Borrar')){state.catalog=state.catalog.filter(x=>x.id!==e.id);save();renderCatalog();renderFavs();}});
+   bt.append(fav,reg,ed,del);row.append(info,bt);sec.append(row);
+  });
+  el.append(sec);
  });
 }
-function drawCurve(t){
- const svg=$('curve'),W=600,H=230,L=48,R=16,T=16,B=35,plotW=W-L-R,plotH=H-T-B;
- svg.innerHTML='';
- const ns='http://www.w3.org/2000/svg';
+/* ---------- Gráfica ---------- */
+function drawCurve(){
+ const svg=$('curve'),t=Date.now(),ns='http://www.w3.org/2000/svg';
+ const W=Math.max(260,Math.round(svg.getBoundingClientRect().width||(svg.parentElement&&svg.parentElement.clientWidth)||340)),Hh=250;
+ svg.setAttribute('viewBox','0 0 '+W+' '+Hh);svg.innerHTML='';
  function node(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;svg.append(e);return e;}
- const vals=state.drinks.map(d=>d.time);let start=vals.length?Math.min(...vals):t-3600000;start=Math.min(start,t-3600000);
- let end=Math.max(t,start+3600000);end=Math.max(end,...vals, t);
- // Show up to 12 hours before current time and 12 hours forward for a useful curve.
- start=Math.min(start,t-6*3600000);end=Math.max(end,t+3*3600000);
- const maxVal=Math.max(.25,...state.drinks.map(d=>rawAt(d.time)||0),rawAt(t)||0);
- const ymax=Math.min(1,Math.max(.25,Math.ceil(maxVal/.05)*.05));
+ const L=50,R=12,T=16,B=46,plotW=W-L-R,plotH=Hh-T-B;
+ const m=buildModel();
+ const counted=state.drinks.filter(isCounted);
+ const ymaxBase=.25;
+ let start,end,ymax=ymaxBase;
+ if(m&&m.knots.length){
+  const last=m.knots[m.knots.length-1],tz=last.t+last.v/BETA*HOUR;
+  start=Math.min(m.knots[0].t-20*60000,t-60*60000);end=Math.max(t+60*60000,tz+30*60000);
+  const peak=Math.max(...m.knots.map(k=>k.v));ymax=Math.min(1,Math.max(ymaxBase,Math.ceil(peak/.05)*.05));
+ }else{start=t-3*HOUR;end=t+HOUR;}
  const X=x=>L+(x-start)/(end-start)*plotW,Y=y=>T+plotH-(y/ymax)*plotH;
  [0,.08,.15,.2].forEach((y,i)=>{
-  const yy=Y(y);node('line',{x1:L,y1:yy,x2:W-R,y2:yy,stroke:['#596171','#55d6a3','#bd8cff','#ff5e68'][i],'stroke-opacity':i===0?.55:.28,'stroke-dasharray':i===0?'':'4 4'});
-  node('text',{x:L-7,y:yy+4,'text-anchor':'end',fill:'#a8b0c2','font-size':'11'},y.toFixed(2).replace('.',','));
+  const yy=Y(y);node('line',{x1:L,y1:yy,x2:W-R,y2:yy,stroke:['#596171','#55d6a3','#bd8cff','#ff5e68'][i],'stroke-opacity':i===0?.55:.3,'stroke-dasharray':i===0?'':'4 4'});
+  node('text',{x:L-6,y:yy+4,'text-anchor':'end',fill:'#a8b0c2','font-size':'11'},y.toFixed(2).replace('.',','));
  });
  node('line',{x1:L,y1:T,x2:L,y2:T+plotH,stroke:'#596171'});node('line',{x1:L,y1:T+plotH,x2:W-R,y2:T+plotH,stroke:'#596171'});
- for(let i=0;i<=4;i++){const ts=start+(end-start)*i/4;node('text',{x:X(ts),y:H-12,'text-anchor':'middle',fill:'#a8b0c2','font-size':'11'},fmtTime(ts));}
- const points=[];const steps=160;
- for(let i=0;i<=steps;i++){const ts=start+(end-start)*i/steps;const value=rawAt(ts);points.push([X(ts),Y(value===null?0:value)]);}
- node('polyline',{points:points.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#7c9cff','stroke-width':'3','stroke-linejoin':'round','stroke-linecap':'round'});
- state.drinks.forEach(d=>{if(gramsFor(d)>0&&d.time>=start&&d.time<=end){const val=rawAt(d.time);node('circle',{cx:X(d.time),cy:Y(val||0),r:4,fill:'#f4f6fb',stroke:'#7c9cff','stroke-width':2});}});
- const current=rawAt(t);if(current!==null){node('line',{x1:X(t),y1:T,x2:X(t),y2:T+plotH,stroke:'#fff','stroke-opacity':'.4','stroke-dasharray':'3 4'});node('circle',{cx:X(t),cy:Y(current),r:5,fill:zoneFor(current).color,stroke:'#fff','stroke-width':1.5});}
+ node('text',{x:12,y:T+plotH/2,'text-anchor':'middle',fill:'#a8b0c2','font-size':'11',transform:'rotate(-90 12 '+(T+plotH/2)+')'},'Estimación del modelo (%)');
+ node('text',{x:L+plotW/2,y:Hh-3,'text-anchor':'middle',fill:'#a8b0c2','font-size':'11'},'Hora local del dispositivo');
+ const nt=Math.max(2,Math.floor(plotW/80)),todayKey=fmtDM(t);
+ for(let i=0;i<=nt;i++){
+  const ts=start+(end-start)*i/nt;
+  node('text',{x:X(ts),y:T+plotH+14,'text-anchor':i===0?'start':(i===nt?'end':'middle'),fill:'#a8b0c2','font-size':'11'},fmtHM(ts));
+  if(fmtDM(ts)!==todayKey)node('text',{x:X(ts),y:T+plotH+26,'text-anchor':i===0?'start':(i===nt?'end':'middle'),fill:'#7f8799','font-size':'10'},fmtDM(ts));
+ }
+ if(!m||!m.knots.length){
+  const lines=m?['Sin datos suficientes: registra una bebida','alcohólica con volumen y graduación conocidos.']:['Estimación no disponible:','configura tu peso en Ajustes.'];
+  lines.forEach((s,i)=>node('text',{x:L+plotW/2,y:T+plotH/2-6+i*16,'text-anchor':'middle',fill:'#c7cedd','font-size':'13'},s));
+  svg.setAttribute('aria-label','Gráfico sin datos suficientes. '+lines.join(' '));
+  return;
+ }
+ const kn=m.knots,raw=[[start,0]];
+ for(let i=0;i<kn.length;i++){
+  const k=kn[i];
+  if(i>0){const p=kn[i-1],tz2=p.t+p.v/BETA*HOUR;if(tz2<k.t)raw.push([tz2,0]);raw.push([k.t,Math.max(0,p.v-BETA*(k.t-p.t)/HOUR)]);}
+  else raw.push([k.t,0]);
+  raw.push([k.t,k.v]);
+ }
+ const lastK=kn[kn.length-1];raw.push([lastK.t+lastK.v/BETA*HOUR,0]);raw.push([end,0]);
+ const vNow=bacAt(m,t);
+ const past=raw.filter(p=>p[0]<=t).concat([[t,vNow]]),fut=[[t,vNow]].concat(raw.filter(p=>p[0]>t));
+ const pts=a=>a.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ');
+ node('polyline',{points:pts(past),fill:'none',stroke:'#7c9cff','stroke-width':'3','stroke-linejoin':'round','stroke-linecap':'round'});
+ node('polyline',{points:pts(fut),fill:'none',stroke:'#7c9cff','stroke-width':'2.5','stroke-dasharray':'6 5','stroke-linejoin':'round','stroke-linecap':'round','stroke-opacity':'.9'});
+ state.drinks.forEach(d=>{
+  if(!Number.isFinite(d.time)||d.time<start||d.time>end)return;
+  if(d.kind!=='alcohol'){node('line',{x1:X(d.time),y1:T+plotH-7,x2:X(d.time),y2:T+plotH,stroke:d.kind==='med'?'#ffd166':'#8d96a8','stroke-width':'3'});return;}
+ });
+ counted.forEach(d=>{
+  if(d.time<start||d.time>end)return;
+  const c=node('circle',{cx:X(d.time),cy:Y(bacAt(m,d.time)),r:4.5,fill:'#f4f6fb',stroke:'#7c9cff','stroke-width':2});
+  const tt=document.createElementNS(ns,'title');tt.textContent=d.name+' · '+fmtDateTime(d.time);c.append(tt);
+ });
+ node('line',{x1:X(t),y1:T,x2:X(t),y2:T+plotH,stroke:'#fff','stroke-opacity':'.4','stroke-dasharray':'3 4'});
+ node('circle',{cx:X(t),cy:Y(vNow),r:5,fill:zoneFor(vNow).color,stroke:'#fff','stroke-width':1.5});
+ node('text',{x:Math.min(W-R-2,Math.max(L+2,X(t))),y:T+10,'text-anchor':X(t)>W-60?'end':'start',fill:'#e8ecf6','font-size':'10'},' ahora ');
+ svg.setAttribute('aria-label','Gráfico de la estimación del modelo en porcentaje a lo largo del tiempo. Valor actual aproximado '+fmtPct(vNow)+'. '+counted.length+' bebidas alcohólicas contabilizadas. Es una estimación, no una medición.');
 }
-function addDrink(name,ml,abv,extra={}){
- state.drinks.push({id:(crypto.randomUUID?crypto.randomUUID():String(now())+Math.random()),name,ml:num(ml),abv:num(abv),time:now(),...extra});
- if(!state.sessionStarted)state.sessionStarted=now();
- save();render();
+function renderAll(){
+ const t=Date.now();
+ renderEstimate(t);renderAlerts();renderLog();renderFavs();drawCurve();
+ $('restoreNightBtn').classList.toggle('hidden',!(state.lastNight&&state.lastNight.drinks&&state.lastNight.drinks.length));
+ if(!$('catalogTab').classList.contains('hidden'))renderCatalog();
 }
-function newNight(){state.drinks=[];state.sessionStarted=null;save();render();}
-document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
- const tab=btn.dataset.tab;
- ['drinkTab','planTab'].forEach(id=>$(id).classList.toggle('hidden',id!==tab));
- document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===tab;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));});
-}));
-document.querySelectorAll('#drinkButtons .drink[data-name]').forEach(btn=>btn.addEventListener('click',()=>{
- const d=btn.dataset;
- if(d.med){pendingMedication=true;$('medDialog').showModal();return;}
- addDrink(d.name,Number(d.ml),Number(d.abv),{marker:d.marker==='true'});
-}));
-$('customOpen').addEventListener('click',()=>{$('customForm').classList.remove('hidden');$('customName').focus();});
-$('cancelCustom').addEventListener('click',()=>{$('customForm').classList.add('hidden');});
-$('addCustom').addEventListener('click',()=>{
- const ml=Number($('customMl').value),abv=Number($('customAbv').value),name=$('customName').value.trim()||'Trago personalizado';
- if(!Number.isFinite(ml)||ml<0||ml>5000||!Number.isFinite(abv)||abv<0||abv>100){alert('Introduce un volumen de 0 a 5000 ml y una graduación de 0 a 100 %.');return;}
- addDrink(name,ml,abv,{marker:ml===0||abv===0});$('customForm').classList.add('hidden');$('customName').value='';
+
+/* ---------- Registro de bebidas ---------- */
+function addMarker(name,med){
+ const rec={id:newId(),name,type:'sin_alcohol',kind:med?'med':'marker',ml:0,abv:0,time:Date.now(),marker:true};
+ if(med)rec.medication=true;
+ state.drinks.push(rec);if(!state.sessionStarted)state.sessionStarted=Date.now();
+ save();renderAll();toast('Registrado: '+name);
+}
+async function deleteDrink(id){
+ const d=state.drinks.find(x=>x.id===id);if(!d)return;
+ const when=Number.isFinite(d.time)?fmtDateTime(d.time):'hora desconocida';
+ if(await ask('Eliminar registro','¿Eliminar «'+d.name+'» ('+when+')? Esta acción no se puede deshacer.','Eliminar')){
+  state.drinks=state.drinks.filter(x=>x.id!==id);save();renderAll();toast('Registro eliminado');
+ }
+}
+function clearNight(){
+ if(state.drinks.length)state.lastNight={clearedAt:Date.now(),drinks:state.drinks};
+ state.drinks=[];state.sessionStarted=null;save();renderAll();
+}
+const form={mode:'add',editId:null,catalogId:null,timeTouched:false,originalTime:null,kind:'alcohol'};
+function fillCatalogSelect(selectedId){
+ const sel=$('fdCatalog');sel.textContent='';
+ sel.append(new Option('— Escribir una bebida nueva —',''));
+ const label=e=>e.name+' — '+fmtNum(e.ml)+' ml · '+(e.abvUnknown?'graduación: ver etiqueta':fmtNum(e.abv)+' %');
+ const favs=state.catalog.filter(e=>e.fav);
+ if(favs.length){const g=document.createElement('optgroup');g.label='★ Favoritas';favs.forEach(e=>g.append(new Option(label(e),e.id)));sel.append(g);}
+ TYPES.forEach(([k,l])=>{const list=state.catalog.filter(e=>e.type===k);if(!list.length)return;const g=document.createElement('optgroup');g.label=l;list.forEach(e=>g.append(new Option(label(e),e.id)));sel.append(g);});
+ sel.value=selectedId&&state.catalog.some(e=>e.id===selectedId)?selectedId:'';
+}
+function setTimeFields(ts){
+ if(Number.isFinite(ts)){const d=new Date(ts);$('fdDate').value=toDateInput(ts);$('fdTime').value=pad2(d.getHours())+':'+pad2(d.getMinutes());}
+ else{$('fdDate').value='';$('fdTime').value='';}
+}
+function setAbvUnknown(on){$('fdAbvUnknown').checked=on;$('fdAbv').disabled=on;if(on)$('fdAbv').value='';}
+function updateFormHints(){
+ const type=$('fdType').value,h=HINTS[type];
+ const th=$('fdTypeHint');th.textContent=h||'';th.classList.toggle('hidden',!h);
+ $('fdMlLabel').textContent=(type==='combinado'||type==='coctel')?'Volumen de la parte alcohólica (ml)':(type==='preparada'?'Volumen consumido (ml)':'Volumen de bebida alcohólica (ml)');
+ $('fdTotalWrap').classList.toggle('hidden',form.kind!=='alcohol'||!(type==='combinado'||type==='coctel'));
+ const pv=$('fdPreview');
+ if(form.kind!=='alcohol'){pv.textContent='';return;}
+ const ml=parseDec($('fdMl').value),unk=$('fdAbvUnknown').checked,abv=parseDec($('fdAbv').value);
+ if(unk)pv.textContent='Graduación desconocida: este registro no contará en el cálculo hasta que añadas la graduación.';
+ else if(ml>0&&abv>0&&abv<=100)pv.textContent='Etanol estimado: '+fmtG(ml*abv/100*DENSITY)+'  ('+fmtNum(ml)+' ml × '+fmtNum(abv)+' % × 0,789)'+($('fdEst').checked?' · valores estimados':'');
+ else pv.textContent='Etanol estimado: — (completa volumen y graduación)';
+}
+function openDrink(opts){
+ const o=opts||{},record=o.record||null,entry=o.entry||null,mode=o.mode||'add';
+ form.mode=mode;form.editId=record?record.id:null;form.kind=record?record.kind:'alcohol';
+ form.catalogId=entry?entry.id:(record&&record.catalogId)||null;
+ $('drinkDialogTitle').textContent=mode==='edit'?'Editar registro':'Añadir bebida';
+ $('fdError').textContent='';$('fdError').classList.add('hidden');
+ fillCatalogSelect(form.catalogId);
+ const src=record||entry;
+ const typeSel=$('fdType');if(!typeSel.options.length)TYPES.forEach(([k,l])=>typeSel.append(new Option(l,k)));
+ $('fdName').value=src?src.name:'';
+ typeSel.value=src&&TYPE_KEYS.includes(src.type)?src.type:'otra';
+ $('fdMl').value=src&&Number.isFinite(src.ml)&&src.ml>0?fmtNum(src.ml):'';
+ const unk=!!(src&&(src.abvUnknown||!Number.isFinite(src.abv)||src.abv<=0));
+ setAbvUnknown(unk&&!!src&&form.kind==='alcohol');
+ $('fdAbv').value=(!$('fdAbvUnknown').checked&&src&&Number.isFinite(src.abv)&&src.abv>0)?fmtNum(src.abv):'';
+ $('fdEst').checked=!!(src&&src.estimated);
+ $('fdTotal').value=record&&Number.isFinite(record.totalMl)?fmtNum(record.totalMl):'';
+ $('fdNote').value=record&&record.note?record.note:'';
+ $('fdFav').checked=false;$('fdFavWrap').classList.toggle('hidden',mode==='edit'||form.kind!=='alcohol');
+ form.originalTime=record&&Number.isFinite(record.time)?record.time:null;
+ form.timeTouched=mode==='edit'?!Number.isFinite(form.originalTime):false;
+ setTimeFields(mode==='edit'?form.originalTime:Date.now());
+ document.querySelectorAll('#drinkForm .alc-only').forEach(el=>{if(el.id==='fdTotalWrap'||el.id==='fdFavWrap')return;el.classList.toggle('hidden',form.kind!=='alcohol');});
+ updateFormHints();
+ $('drinkDialog').showModal();
+ (form.kind==='alcohol'&&mode==='add'&&!src?$('fdName'):(src&&!$('fdAbvUnknown').checked&&form.kind==='alcohol'&&!$('fdAbv').value?$('fdAbv'):$('fdName'))).focus();
+}
+function fail(boxId,list){const b=$(boxId);b.textContent='';list.forEach((m,i)=>{if(i)b.append(document.createElement('br'));b.append(document.createTextNode('• '+m));});b.classList.remove('hidden');b.scrollIntoView({block:'nearest'});}
+function collectDrink(){
+ const errs=[],editing=form.mode==='edit';
+ const orig=editing?state.drinks.find(d=>d.id===form.editId):null;
+ if(editing&&!orig)return{errs:['El registro que intentas editar ya no existe.']};
+ const kind=orig?orig.kind:'alcohol';
+ const type=$('fdType').value,note=$('fdNote').value.trim().slice(0,300);
+ let name=$('fdName').value.trim().slice(0,60);
+ // Hora
+ let time=null;
+ if(!form.timeTouched&&!editing)time=Date.now();
+ else if(!form.timeTouched&&editing)time=form.originalTime;
+ else{
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec($('fdDate').value),t=/^(\d{2}):(\d{2})/.exec($('fdTime').value);
+  if(!m||!t)errs.push('Hora: indica una fecha y una hora válidas.');
+  else{
+   const dt=new Date(+m[1],+m[2]-1,+m[3],+t[1],+t[2],0,0);
+   if(Number.isNaN(dt.getTime())||dt.getMonth()!==+m[2]-1)errs.push('Hora: la fecha indicada no es válida.');
+   else if(dt.getTime()>Date.now()+60000)errs.push('Hora: el consumo no puede estar en el futuro.');
+   else time=dt.getTime();
+  }
+ }
+ if(kind!=='alcohol'){
+  if(!name)name=orig.name;
+  if(errs.length)return{errs};
+  return{rec:{...orig,name,note,time}};
+ }
+ const ml=parseDec($('fdMl').value);
+ if(!(ml>0&&ml<=5000))errs.push('Volumen: escribe un número mayor que 0 y de hasta 5000 ml (puedes usar coma decimal, p. ej. 37,5). Solo letras o valores negativos no son válidos.');
+ const unknown=$('fdAbvUnknown').checked;let abv=null;
+ if(!unknown){
+  abv=parseDec($('fdAbv').value);
+  if(!(abv>0&&abv<=100)){errs.push('Graduación: escribe un número mayor que 0 y de hasta 100 % vol. (coma o punto). Si no la sabes, marca «No sé la graduación». Si la bebida no tiene alcohol, regístrala como marcador sin alcohol.');abv=null;}
+ }
+ let totalMl;const totalTxt=$('fdTotal').value.trim();
+ if(totalTxt&&!$('fdTotalWrap').classList.contains('hidden')){
+  const tv=parseDec(totalTxt);
+  if(!(tv>0&&tv<=10000))errs.push('Volumen total: escribe un número mayor que 0 o déjalo vacío.');
+  else if(ml>0&&tv<ml)errs.push('Volumen total: no puede ser menor que el volumen de la parte alcohólica.');
+  else totalMl=tv;
+ }
+ if(errs.length)return{errs};
+ if(!name)name=typeLabel(type)||'Bebida sin nombre';
+ const rec={...(orig||{}),id:orig?orig.id:newId(),name,type,kind:'alcohol',ml,abv:unknown?null:abv,abvUnknown:unknown,estimated:$('fdEst').checked,note,time};
+ if(totalMl!==undefined)rec.totalMl=totalMl;else delete rec.totalMl;
+ if(!note)delete rec.note;
+ if(!orig&&form.catalogId)rec.catalogId=form.catalogId;
+ return{rec};
+}
+function ensureFavorite(rec){
+ const same=state.catalog.find(e=>e.name.toLowerCase()===rec.name.toLowerCase()&&e.type===rec.type&&e.ml===rec.ml&&((e.abvUnknown&&rec.abvUnknown)||(!e.abvUnknown&&!rec.abvUnknown&&e.abv===rec.abv)));
+ if(same){same.fav=true;return;}
+ state.catalog.push({id:newId(),name:rec.name,type:rec.type,ml:rec.ml,abv:rec.abvUnknown?null:rec.abv,abvUnknown:rec.abvUnknown,estimated:!!rec.estimated,fav:true});
+}
+function submitDrink(ev){
+ ev.preventDefault();
+ const r=collectDrink();
+ if(r.errs&&r.errs.length){fail('fdError',r.errs);return;}
+ const rec=r.rec;
+ if(form.mode==='edit'){const i=state.drinks.findIndex(d=>d.id===rec.id);if(i<0){fail('fdError',['El registro ya no existe.']);return;}state.drinks[i]=rec;}
+ else{state.drinks.push(rec);if(!state.sessionStarted)state.sessionStarted=Date.now();}
+ if(form.mode==='add'&&$('fdFav').checked&&rec.kind==='alcohol')ensureFavorite(rec);
+ save();$('drinkDialog').close();renderAll();
+ toast(form.mode==='edit'?'Registro actualizado':'Registrado: '+rec.name+(isCounted(rec)?' · '+fmtG(ethanolG(rec))+' de etanol':''));
+}
+/* ---------- Catálogo: edición ---------- */
+let catEditId=null;
+function openCat(entry){
+ catEditId=entry?entry.id:null;
+ const ts=$('cdType');if(!ts.options.length)TYPES.forEach(([k,l])=>ts.append(new Option(l,k)));
+ $('catDialogTitle').textContent=entry?'Editar bebida del catálogo':'Nueva bebida en el catálogo';
+ $('cdError').classList.add('hidden');
+ $('cdName').value=entry?entry.name:'';ts.value=entry?entry.type:'otra';
+ $('cdMl').value=entry&&Number.isFinite(entry.ml)?fmtNum(entry.ml):'';
+ $('cdAbvUnknown').checked=!!(entry&&entry.abvUnknown);$('cdAbv').disabled=$('cdAbvUnknown').checked;
+ $('cdAbv').value=entry&&!entry.abvUnknown&&Number.isFinite(entry.abv)?fmtNum(entry.abv):'';
+ $('cdEst').checked=!!(entry&&entry.estimated);
+ $('catDialog').showModal();$('cdName').focus();
+}
+function submitCat(ev){
+ ev.preventDefault();
+ const errs=[],name=$('cdName').value.trim().slice(0,60),type=$('cdType').value,ml=parseDec($('cdMl').value),unk=$('cdAbvUnknown').checked,abv=parseDec($('cdAbv').value);
+ if(!name)errs.push('Escribe un nombre.');
+ if(!(ml>0&&ml<=5000))errs.push('Volumen: número mayor que 0 y de hasta 5000 ml.');
+ if(!unk&&!(abv>0&&abv<=100))errs.push('Graduación: número mayor que 0 y de hasta 100 %, o marca «según etiqueta».');
+ if(errs.length){fail('cdError',errs);return;}
+ const data={name,type,ml,abv:unk?null:abv,abvUnknown:unk,estimated:$('cdEst').checked};
+ const cur=catEditId?state.catalog.find(e=>e.id===catEditId):null;
+ if(cur)Object.assign(cur,data);else state.catalog.push({id:newId(),fav:false,...data});
+ save();$('catDialog').close();renderCatalog();renderFavs();toast('Catálogo actualizado');
+}
+/* ---------- Copia de seguridad ---------- */
+function exportData(){
+ try{
+  const payload={app:'noche',schema:SCHEMA,exportedAt:new Date().toISOString(),data:state};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a'),d=new Date();
+  a.href=URL.createObjectURL(blob);a.download='noche-copia-'+d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+'-'+pad2(d.getHours())+pad2(d.getMinutes())+'.json';
+  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  $('dataMsg').textContent='Copia exportada. Guárdala en un lugar seguro: no está cifrada.';
+ }catch(e){$('dataMsg').textContent='No se pudo exportar: '+e.message;}
+}
+async function importData(file){
+ if(!file)return;
+ try{
+  const txt=await file.text(),j=JSON.parse(txt),data=isObj(j)&&isObj(j.data)?j.data:j;
+  if(!isObj(data)||!Array.isArray(data.drinks))throw new Error('el archivo no parece una copia de Noche');
+  const n=data.drinks.length;
+  if(!await ask('Importar copia','Se reemplazarán los datos actuales por los de la copia ('+n+' registros). Antes se guarda automáticamente una copia de lo actual dentro de este navegador.','Importar')){return;}
+  try{localStorage.setItem(STORE+'_backup_pre_import',localStorage.getItem(STORE)||'');}catch(e){}
+  state=migrate(data);applyInputs();save();renderAll();
+  $('dataMsg').textContent='Copia importada: '+state.drinks.length+' registros.';
+ }catch(e){$('dataMsg').textContent='No se pudo importar: '+e.message+'. Tus datos actuales no se modificaron.';}
+ finally{$('importFile').value='';}
+}
+/* ---------- Pestañas y entradas ---------- */
+function switchTab(tab){
+ ['drinkTab','catalogTab','planTab','settingsTab'].forEach(id=>$(id).classList.toggle('hidden',id!==tab));
+ document.querySelectorAll('nav [data-tab]').forEach(b=>{const on=b.dataset.tab===tab;b.classList.toggle('active',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+ if(tab==='drinkTab')drawCurve();
+ if(tab==='catalogTab')renderCatalog();
+ window.scrollTo(0,0);
+}
+function applyInputs(){
+ $('weight').value=state.weight||'';$('sex').value=state.sex||'0.68';
+ $('threshold').value=fmtNum(state.threshold);
+ for(let i=0;i<5;i++)$('rule'+(i+1)).value=state.rules[i]||'';
+ $('anchorBrief').value=state.anchorBrief||'';
+ weightMsg();
+}
+function weightMsg(){
+ const w=$('weight').value.trim();
+ $('weightMsg').textContent=!w?'Sin peso no hay estimación. Se guarda solo en este navegador.':(weightKg()===null&&!(parseDec(w)>=30&&parseDec(w)<=300)?'Peso no válido: escribe un número entre 30 y 300 (puedes usar coma).':'');
+}
+document.querySelectorAll('nav [data-tab]').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+$('addDrinkBtn').addEventListener('click',()=>openDrink({}));
+$('drinkForm').addEventListener('submit',submitDrink);
+$('fdCancel').addEventListener('click',()=>$('drinkDialog').close());
+$('fdCatalog').addEventListener('change',()=>{
+ const e=state.catalog.find(x=>x.id===$('fdCatalog').value);form.catalogId=e?e.id:null;if(!e){updateFormHints();return;}
+ $('fdName').value=e.name;$('fdType').value=e.type;$('fdMl').value=Number.isFinite(e.ml)?fmtNum(e.ml):'';
+ setAbvUnknown(!!e.abvUnknown);if(!e.abvUnknown)$('fdAbv').value=fmtNum(e.abv);
+ $('fdEst').checked=!!e.estimated;updateFormHints();
 });
-$('undoBtn').addEventListener('click',()=>{if(!state.drinks.length)return;state.drinks.pop();save();render();});
-$('newNightBtn').addEventListener('click',()=>{if(!state.drinks.length){newNight();return;}if(confirm('¿Borrar todos los registros de esta noche? El perfil y el Plan se conservarán.'))newNight();});
-$('startFresh').addEventListener('click',()=>{newNight();$('oldNightDialog').close();});
+['fdType','fdMl','fdAbv','fdEst'].forEach(id=>$(id).addEventListener('input',updateFormHints));
+$('fdType').addEventListener('change',updateFormHints);
+$('fdAbvUnknown').addEventListener('change',()=>{setAbvUnknown($('fdAbvUnknown').checked);if(!$('fdAbvUnknown').checked)$('fdAbv').focus();updateFormHints();});
+['fdDate','fdTime'].forEach(id=>$(id).addEventListener('input',()=>{form.timeTouched=true;}));
+$('fdNow').addEventListener('click',()=>{form.timeTouched=form.mode==='edit';setTimeFields(Date.now());});
+$('catNewBtn').addEventListener('click',()=>openCat(null));
+$('catForm').addEventListener('submit',submitCat);
+$('cdCancel').addEventListener('click',()=>$('catDialog').close());
+$('cdAbvUnknown').addEventListener('change',()=>{$('cdAbv').disabled=$('cdAbvUnknown').checked;if($('cdAbvUnknown').checked)$('cdAbv').value='';});
+$('catRestoreBtn').addEventListener('click',()=>{
+ let n=0;DEFAULT_CATALOG.forEach(d=>{if(!state.catalog.some(e=>e.id===d.id)){state.catalog.push({...d});n++;}});
+ save();renderCatalog();renderFavs();toast(n?'Se restauraron '+n+' ejemplos':'No faltaba ningún ejemplo');
+});
+$('undoBtn').addEventListener('click',()=>{if(!state.drinks.length)return;state.drinks.pop();save();renderAll();});
+$('newNightBtn').addEventListener('click',async()=>{
+ if(!state.drinks.length){clearNight();return;}
+ if(await ask('Nueva noche','¿Borrar todos los registros de esta noche? El perfil, el catálogo y el Plan se conservan. Podrás recuperar los registros desde Ajustes con «Restaurar última noche borrada».','Borrar registros'))clearNight();
+});
+$('restoreNightBtn').addEventListener('click',async()=>{
+ const ln=state.lastNight;if(!ln||!ln.drinks)return;
+ if(await ask('Restaurar noche','Se añadirán '+ln.drinks.length+' registros de la noche borrada ('+fmtDateTime(ln.clearedAt)+') a los actuales.','Restaurar',false)){
+  const ids=new Set(state.drinks.map(d=>d.id));ln.drinks.forEach(d=>{if(!ids.has(d.id))state.drinks.push(d);});
+  state.lastNight=null;save();renderAll();toast('Registros restaurados');
+ }
+});
+$('startFresh').addEventListener('click',()=>{clearNight();$('oldNightDialog').close();});
 $('keepNight').addEventListener('click',()=>$('oldNightDialog').close());
-$('medConfirm').addEventListener('click',()=>{addDrink('Clonazepam 0,5 mg',0,0,{marker:true,medication:true});$('medDialog').close();});
+$('medConfirm').addEventListener('click',()=>{addMarker('Clonazepam 0,5 mg',true);$('medDialog').close();});
 $('medCancel').addEventListener('click',()=>$('medDialog').close());
-$('weight').addEventListener('input',()=>{save();render();});
-$('sex').addEventListener('change',()=>{save();render();});
+$('exportBtn').addEventListener('click',exportData);
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',()=>importData($('importFile').files[0]));
+$('weight').addEventListener('input',()=>{state.weight=$('weight').value.trim().replace(',','.');weightMsg();save();renderAll();});
+$('sex').addEventListener('change',()=>{state.sex=$('sex').value;save();renderAll();});
+$('threshold').addEventListener('input',()=>{
+ const v=parseDec($('threshold').value);
+ if(v>=0.01&&v<=0.5){state.threshold=v;$('thresholdMsg').textContent='';save();renderAll();}
+ else $('thresholdMsg').textContent='Valor no válido: escribe un número entre 0,01 y 0,50. Se mantiene '+fmtNum(state.threshold)+' %.';
+});
 for(let i=0;i<5;i++)$('rule'+(i+1)).addEventListener('input',()=>{state.rules[i]=$('rule'+(i+1)).value;save();});
 $('anchorBrief').addEventListener('input',()=>{state.anchorBrief=$('anchorBrief').value;save();});
-load();
-if(state.drinks.length){$('oldNightDialog').showModal();}
-render();setInterval(render,30000);
+// Si otra pestaña/ventana modifica los datos, se recargan para no sobrescribirlos con un estado viejo.
+window.addEventListener('storage',e=>{if(e.key===STORE&&e.newValue){try{const p=JSON.parse(e.newValue);if(isObj(p)){state=migrate(p);applyInputs();renderAll();}}catch(_){}}});
+window.addEventListener('resize',(()=>{let h=null;return()=>{clearTimeout(h);h=setTimeout(drawCurve,150);};})());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll();});
+
+/* ---------- Arranque y reloj ---------- */
+load();applyInputs();renderMarkers();renderAll();
+if(state.drinks.length)$('oldNightDialog').showModal();
+let tickN=0;
+setInterval(()=>{
+ const t=Date.now();tickN++;
+ if(tickN%30===0)renderAll();else renderTimes(t);
+ if($('drinkDialog').open&&form.mode==='add'&&!form.timeTouched)setTimeFields(t);
+},1000);
+window.Noche={parseDec,ethanolG,isCounted,buildModel,bacAt,migrate,getState:()=>state,schema:SCHEMA,beta:BETA};
 })();
 </script>
 
 <script>
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      const banner = document.getElementById('updateBanner');
+      const show = () => { if (banner) banner.classList.remove('hidden'); };
+      // Con un controlador activo, un worker nuevo instalado significa que hay una versión nueva.
+      const watch = w => { if (w) w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) show(); }); };
+      if (reg.waiting && navigator.serviceWorker.controller) show();
+      watch(reg.installing);
+      reg.addEventListener('updatefound', () => watch(reg.installing));
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
+      const r = document.getElementById('reloadBtn'), l = document.getElementById('laterBtn');
+      if (r) r.addEventListener('click', () => location.reload());
+      if (l) l.addEventListener('click', () => banner.classList.add('hidden'));
+    }).catch(() => {});
   });
 }
 </script>
