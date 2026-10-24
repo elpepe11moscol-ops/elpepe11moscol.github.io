@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101218">
+<meta name="theme-color" content="#17102b">
 <meta name="description" content="Seguimiento informativo de bebidas y estimación de alcohol.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Noche — Seguimiento</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <style>
-:root{color-scheme:dark;--bg:#101218;--panel:#1a1e28;--panel2:#222735;--text:#f4f6fb;--muted:#a8b0c2;--line:#343b4d;--accent:#7c9cff;--red:#ff5e68;--green:#55d6a3;--purple:#bd8cff;--gray:#8d96a8;--yellow:#ffd166}
+:root{color-scheme:dark;--bg:#120d22;--panel:#201735;--panel2:#2b2045;--text:#fffaff;--muted:#c2b7dc;--line:#493566;--accent:#c4ff4d;--red:#ff5470;--green:#43f0bb;--purple:#d18bff;--gray:#a8a0bf;--yellow:#ffe45e}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 header{padding:18px 18px 8px;max-width:760px;margin:auto}
@@ -92,6 +92,48 @@ dialog::backdrop{background:#000b}dialog h2{margin-bottom:8px}dialog p{color:var
 .dialog-actions{display:flex;gap:9px;flex-direction:column}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom));z-index:20;background:#16352c;color:#d5ffec;border:1px solid #285a49;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;max-width:90vw;box-shadow:0 6px 20px #0008}
 @media(min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.drink{min-height:84px}.metrics{grid-template-columns:repeat(3,1fr)}.dialog-actions{flex-direction:row}.dialog-actions .btn{flex:1}}
+
+/* Tema más vivo: solo presentación; no modifica la lógica ni los registros. */
+body{
+  background:radial-gradient(ellipse at 12% -8%,#43206b 0,transparent 38%),radial-gradient(ellipse at 100% 28%,#123d58 0,transparent 30%),var(--bg);
+}
+header h1{
+  background:linear-gradient(100deg,#d8ff59 0%,#56f0d1 48%,#d18bff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.card{
+  background:linear-gradient(145deg,rgba(43,32,69,.96),rgba(28,21,48,.98));
+  border-color:#513a75;box-shadow:0 8px 24px rgba(5,2,18,.18);
+}
+.metric{background:linear-gradient(145deg,#332450,#25203f);border:1px solid #493568}
+.metric .value{color:#f6f0ff}
+.zone{background:#3a2856;border:1px solid #7652a6}
+.drink{background:linear-gradient(145deg,#352450,#29203f);border-color:#584078;transition:transform .12s,border-color .12s,background .12s}
+.drink:focus-visible,.btn:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #56f0d1;outline-offset:2px}
+.drink:hover{border-color:#c4ff4d;background:linear-gradient(145deg,#44305e,#2c2445)}
+.btn{background:linear-gradient(105deg,#d7ff59,#75f0b4);color:#171329;box-shadow:0 4px 14px rgba(130,255,157,.12)}
+.btn.secondary{background:#34254e;border-color:#5b437a;color:#f8f1ff;box-shadow:none}
+.btn.red{background:linear-gradient(105deg,#ff5470,#ff865c);color:#260a20}
+input,select,textarea{background:#171128;border-color:#513a75}
+input[type=checkbox]{accent-color:#c4ff4d}
+.notice{color:#fff0a6;background:#3b2d20;border-color:#886b35}
+.notice.good{color:#baffeb;background:#153b38;border-color:#247c70}
+.notice.danger,.err{color:#ffe2e8;background:#451c35;border-color:#a13e68}
+.alert.warn{background:#3a2c1b;border-color:#8a6b32;color:#fff0b8}
+.alert.danger{background:#421d35;border-color:#a33d6a;color:#ffe4ec}
+.alert.info{background:#1d3150;border-color:#416b9f;color:#e0f0ff}
+.preview{background:#332450;border:1px solid #493568}
+#curve{background:linear-gradient(145deg,#1b1530,#111b2e);border:1px solid #493568}
+nav.bottom{background:rgba(18,13,34,.92);border-top-color:#493566}
+.tab{background:#211735;border-color:#493566;color:#c2b7dc}
+.tab.active{background:linear-gradient(110deg,#d7ff59,#75f0b4);border-color:#c4ff4d;color:#171329}
+dialog{background:#201735;border-color:#65468d;box-shadow:0 20px 70px #0009}
+#toast{background:#153b38;color:#c8fff0;border-color:#43f0bb}
+.badge{background:#55401e;color:#fff0a6}
+.log,.entry{border-bottom-color:#493566}
+::selection{background:#c4ff4d;color:#171329}
+@media(prefers-reduced-motion:no-preference){.btn,.tab,.drink{transition:transform .12s ease,background .18s ease,border-color .18s ease}}
+
 </style>
 </head>
 <body>
